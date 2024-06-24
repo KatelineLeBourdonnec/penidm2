@@ -1742,7 +1742,7 @@ subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
 			res202num,res212num,res20101num,&
 			res20102num,res20112num,res20202num,&
 			res20212num,res21212num,&
-			vet01,vet02,vet12,,gamma)
+			vet01,vet02,vet12,gamma)
                         
 			v=res2denum*(su12**vet12)
 
