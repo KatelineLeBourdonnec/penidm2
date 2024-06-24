@@ -625,7 +625,7 @@ res = 0.d0
 if (a.eq.b) then
     res = 0.d0
 else if ((cas.eq.2) .or. (cas.eq.6)) then
-    do 11 j = 1, 5
+    do j = 1, 5
         dx = xr * x(j)
         xx = xm + dx
         call fonct(xx, the01, ri01, gl01, su01)
@@ -643,9 +643,9 @@ else if ((cas.eq.2) .or. (cas.eq.6)) then
         call fonct(c, the12, ri12_T, gl12_T, su12_T)
         f2 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 / (su12**v12)
         res = res + w(j) * (f1 + f2)
-    end do
+
 else if ((cas.eq.4) .or. (cas.eq.7)) then
-    do 11 j = 1, 5
+    do j = 1, 5
         dx = xr * x(j)
         xx = xm + dx
         call fonct(xx, the01, ri01, gl01, su01)
