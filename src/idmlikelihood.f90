@@ -178,111 +178,64 @@
                 end if
 
 		
-                if(c(i).eq.1)then ! cad 0-->1 et 0-->2
-                        call susp(t1(i),the01,nz01,su01,ri01,zi01,gl01)
-                        call susp(t3(i),the02,nz02,su02,ri02,zi02,gl02)
+if(c(i).eq.1) then
+    ! cad 0-->1 et 0-->2
+    call susp(t1(i), the01, nz01, su01, ri01, zi01, gl01)
+    call susp(t3(i), the02, nz02, su02, ri02, zi02, gl02)
+    res1 = (-gl01 * vet01) - (gl02 * vet02)
+else if(c(i).eq.2) then
+    ! cpi 0-->1
+    if(gausspoint.eq.10) then
+        call qgaussPL(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
+    else if(gausspoint.eq.15) then
+        call qgaussPL15(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
+    end if
+    res1 = dlog(res2)
+else if(c(i).eq.3) then
+    ! obs 0-->1
+    call susp(t2(i), the01, nz01, su01, ri01, zi01, gl01)
+    call susp(t3(i), the12, nz12, su12, ri12, zi12, gl12)
+    call susp(t1(i), the02, nz02, su02, ri02, zi02, gl02)
+    res2 = -gl01 * vet01 + dlog(ri01 * vet01) - gl12 * vet12 - gl02 * vet02
+    call susp(t2(i), the12, nz12, su12, ri12, zi12, gl12)
+    res1 = res2 + gl12 * vet12
+else if(c(i).eq.4) then
+    ! cpi 0-->1 et obs 1-->2
+    if(gausspoint.eq.10) then
+        call qgaussPL(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
+    else if(gausspoint.eq.15) then
+        call qgaussPL15(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
+    end if
+    res1 = dlog(res2)
+else if(c(i).eq.5) then
+    ! obs 0-->1 et obs 1-->2
+    call susp(t2(i), the01, nz01, su01, ri01, zi01, gl01)
+    call susp(t3(i), the12, nz12, su12, ri12, zi12, gl12)
+    call susp(t1(i), the02, nz02, su02, ri02, zi02, gl02)
+    res2 = -gl01 * vet01 + dlog(ri01 * vet01) - gl12 * vet12 + dlog(ri12 * vet12) - gl02 * vet02
+    call susp(t2(i), the12, nz12, su12, ri12, zi12, gl12)
+    res1 = res2 + gl12 * vet12
+else if(c(i).eq.6) then
+    ! vivant ???
+    if(gausspoint.eq.10) then
+        call qgaussPL(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
+    else if(gausspoint.eq.15) then
+        call qgaussPL15(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
+    end if
+    call susp(t3(i), the01, nz01, su01, ri01, zi01, gl01)
+    call susp(t3(i), the02, nz02, su02, ri02, zi02, gl02)
+    res1 = dlog(res2 + (su01**vet01) * (su02**vet02))
+else
+    ! passage 0-->2
+    call susp(t3(i), the12, nz12, su12, ri12, zi12, gl12)
+    if(gausspoint.eq.10) then
+        call qgaussPL(c(i), t1(i), t3(i), the01, the12, the02, res2, vet01, vet12, vet02)
+    else if(gausspoint.eq.15) then
+        call qgaussPL15(c(i), t1(i), t3(i), the01, the12, the02, res2, vet01, vet12, vet02)
+    end if
+    res1 = dlog(res2 + ri02 * vet02 * (su02**vet02) * (su01**vet01))
+end if
 
-                        res1 = (-gl01*vet01)-(gl02*vet02)
-                else
-                if(c(i).eq.2)then ! cpi 0-->1
-                        if(gausspoint.eq.10) then
-                        	call qgaussPL(c(i),t1(i),t2(i),the01,the12,&
-                        	the02,res2,vet01,vet12,vet02)
-			else 
-				if(gausspoint.eq.15) then
-                        		call qgaussPL15(c(i),t1(i),t2(i),the01,the12,&
-                        		the02,res2,vet01,vet12,vet02)
-				
-			end if 
-
-                 
-		res1=dlog(res2)
-
-                else  
-                    if(c(i).eq.3)then ! obs 0-->1
-                    call susp(t2(i),the01,nz01,su01,ri01,zi01,gl01)
-                    call susp(t3(i),the12,nz12,su12,ri12,zi12,gl12)
-                    call susp(t1(i),the02,nz02,su02,ri02,zi02,gl02)
-                    res2=-gl01*vet01+dlog(ri01*vet01) -&
-                    gl12*vet12-gl02*vet02
-                    call susp(t2(i),the12,nz12,su12,ri12,zi12,gl12)
-                    res1=res2 +gl12*vet12
-                    else   
-                       if(c(i).eq.4)then ! cpi 0-->1 et obs 1-->2
-                      
-			if(gausspoint.eq.10) then
-                        	call qgaussPL(c(i),t1(i),t2(i),the01,the12,the02,&
-                        	res2,vet01,vet12,vet02)
-			else 
-				if(gausspoint.eq.15) then
-                        		call qgaussPL15(c(i),t1(i),t2(i),the01,the12,&
-                        		the02,res2,vet01,vet12,vet02)
-
-			end if 
-		
-
-                       res1=dlog(res2)
-
-
-                       else
-
-
-
-                         if(c(i).eq.5)then ! obs 0-->1 et obs 1-->2
-				
-                         call susp(t2(i),the01,nz01,su01,ri01,zi01,gl01)
-                         call susp(t3(i),the12,nz12,su12,ri12,zi12,gl12)
-                         call susp(t1(i),the02,nz02,su02,ri02,zi02,gl02)
-                         res2=-gl01*vet01 + dlog(ri01*vet01) -&
-                         gl12*vet12 + dlog(ri12*vet12) -gl02*vet02
-                         call susp(t2(i),the12,nz12,su12,ri12,zi12,gl12)
-                         res1=res2+gl12*vet12
-
-                         else
-
-
-
-
-                            if(c(i).eq.6)then ! vivant ???
-				if(gausspoint.eq.10) then
-                        		call qgaussPL(c(i),t1(i),t2(i),the01,the12,the02,&
-                            res2,vet01,vet12,vet02)
-			    	else 
-					if(gausspoint.eq.15) then
-                        			call qgaussPL15(c(i),t1(i),t2(i),the01,the12,&
-                        			the02,res2,vet01,vet12,vet02)
-			    		
-				end if 
-
-                        
-                            call susp(t3(i),the01,nz01,su01,ri01,zi01,gl01)
-                            call susp(t3(i),the02,nz02,su02,ri02,zi02,gl02)
-			     
-                            res1=dlog(res2 +&
-                            (su01**vet01)*(su02**vet02))  
-
-                            else ! passage 0-->2  
-
-                                call susp(t3(i),the12,nz12,su12,ri12,zi12,gl12)
-                               
-				if(gausspoint.eq.10) then
-                        		call qgaussPL(c(i),t1(i),t3(i),the01,the12,&
-                        		the02,res2,vet01,vet12,vet02)
-                                else 
-                                	if(gausspoint.eq.15) then
-                        			call qgaussPL15(c(i),t1(i),t3(i),the01,the12,&
-                        			the02,res2,vet01,vet12,vet02)
-                                end if 
-
-
-				res1=dlog(res2 +&
-				ri02*vet02*(su02**vet02)*(su01**vet01))
-                            endif
-                          endif  
-                        endif    
-                    endif
-                endif   
-             endif   
 
                 res = res + res1  + tronc
              
