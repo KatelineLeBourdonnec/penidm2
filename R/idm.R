@@ -100,6 +100,8 @@
 #' @param nproc number of cluster
 #' @param option.sequential parameters to give if you want to do the optimisation version to
 #'  fix splines
+#' @param timedep12 boolean indicating whether the 12 transition intensity depends on the true 
+#' intermediate event time
 #' @return
 #'
 #' \item{call}{the call that produced the result.} \item{coef}{regression
@@ -230,6 +232,7 @@ idm <- function(formula01,
                 nlambda01=50,
                 nlambda02=50,
                 nlambda12=50,
+                timedep12=FALSE,
                 penalty=NULL,
                 penalty.factor=NULL,
                 alpha=ifelse(penalty=="scad",3.7,
@@ -419,7 +422,11 @@ idm <- function(formula01,
       #  	cat("------ Program Splines ------ \n")
       ## check knots
 
-    size1 <- NC01 + NC02 + NC12
+    
+    # KLB: add the intermediate time in the 12 transition
+    nvat12dep <- as.numeric(timedep12)
+    
+    size1 <- NC01 + NC02 + NC12 + nvat12dep
     
 
     noVar<-c(ifelse(as.integer(NC01)>0,0,1),
@@ -691,7 +698,7 @@ idm <- function(formula01,
       
         out<-idm.no.penalty(b,clustertype,epsa,epsb,epsd,nproc,maxiter,size_V,size_spline,noVar,bfix,
                             fix0,knots01,knots02,knots12,ctime,N,nknots01,nknots02,nknots12,
-                            ve01,ve02,ve12,dimnva01,dimnva02,dimnva12,nvat01,nvat02,nvat12,
+                            ve01,ve02,ve12,dimnva01,dimnva02,dimnva12,nvat01,nvat02,nvat12,nvat12dep,
                             t0,t1,t2,t3,troncature,gauss.point,step.sequential,option.sequential)
   
       
@@ -811,6 +818,7 @@ idm <- function(formula01,
                                 nvat01=nvat01,
                                 nvat02=nvat02,
                                 nvat12=nvat12,
+                                nvat12dep=nvat12dep,
                                 t0=t0,
                                 t1=t1,
                                 t2=t2,
@@ -867,6 +875,7 @@ idm <- function(formula01,
           
           betaCoef <- beta[(6+1):size_V]
           names(betaCoef) <- c(Xnames01,Xnames02,Xnames12)
+          if (timedep12) names(betaCoef) <- c(Xnames01,Xnames02,Xnames12,"IllnessTime")
           fit$coef <- betaCoef
           fit$HR <- exp(betaCoef)
           
@@ -881,12 +890,15 @@ idm <- function(formula01,
                          "modelPar1 12",
                          "modelPar2 12")
         
-        names(beta)<- c(theta_names,c(Xnames01,Xnames02,Xnames12))
-        names(fix)<- c(theta_names,c(Xnames01,Xnames02,Xnames12))
-        colnames(V) <- c(theta_names,c(Xnames01,Xnames02,Xnames12))
-        rownames(V) <- c(theta_names,c(Xnames01,Xnames02,Xnames12))
-        colnames(H) <- c(theta_names,c(Xnames01,Xnames02,Xnames12))
-        rownames(H) <- c(theta_names,c(Xnames01,Xnames02,Xnames12))
+        XnamesTemp <- c(Xnames01,Xnames02,Xnames12)
+        if (timedep12) XnamesTemp <- c(Xnames01,Xnames02,Xnames12,"IllnessTime")
+        
+        names(beta)<- c(theta_names,XnamesTemp)
+        names(fix)<- c(theta_names,XnamesTemp)
+        colnames(V) <- c(theta_names,XnamesTemp)
+        rownames(V) <- c(theta_names,XnamesTemp)
+        colnames(H) <- c(theta_names,XnamesTemp)
+        rownames(H) <- c(theta_names,XnamesTemp)
         
         modelPar<-beta[1:6]
         
@@ -1036,6 +1048,7 @@ idm <- function(formula01,
                                   nva01=nvat01,
                                   nva02=nvat02,
                                   nva12=nvat12,
+                                  nva12dep=nvat12dep,
                                   t0=t0,
                                   t1=t1,
                                   t2=t2,
@@ -1115,6 +1128,7 @@ idm <- function(formula01,
                              nvat01=nvat01,
                              nvat02=nvat02,
                              nvat12=nvat12,
+                             nvat12dep=nvat12dep,
                              t0=t0,
                              t1=t1,
                              t2=t2,
@@ -1146,8 +1160,14 @@ idm <- function(formula01,
             
             theta_names <- cbind(c(rep("theta01",(nknots01+2)),rep("theta02",(nknots02+2)),rep("theta12",(nknots12+2))),c((1:(nknots01+2)),(1:(nknots02+2)),(1:(nknots12+2))))
             theta_names <- as.vector(apply(theta_names,1,paste,collapse=" "))
-            rownames(beta) <-c(theta_names,c(Xnames01,Xnames02,Xnames12))
-            rownames(fix)<-c(theta_names,c(Xnames01,Xnames02,Xnames12))
+            
+            
+            
+            XnamesTemp <- c(Xnames01,Xnames02,Xnames12)
+            if (timedep12) XnamesTemp <- c(Xnames01,Xnames02,Xnames12,"IllnessTime")
+            
+            rownames(beta) <-c(theta_names,XnamesTemp)
+            rownames(fix)<-c(theta_names,XnamesTemp)
             rownames(lambda)<-c("lambda01","lambda02","lambda12")
             
             theta01<-beta[1:(nknots01+2),]
@@ -1307,6 +1327,7 @@ idm <- function(formula01,
                              nva01=nvat01,
                              nva02=nvat02,
                              nva12=nvat12,
+                             nva12dep=nvat12dep,
                              t0=t0,
                              t1=t1,
                              t2=t2,
@@ -1351,6 +1372,7 @@ idm <- function(formula01,
                                   nva01=nvat01,
                                   nva02=nvat02,
                                   nva12=nvat12,
+                                  nva12dep=nvat12dep,
                                   t0=t0,
                                   t1=t1,
                                   t2=t2,
@@ -1426,6 +1448,7 @@ idm <- function(formula01,
                                nvat01=nvat01,
                                nvat02=nvat02,
                                nvat12=nvat12,
+                               nvat12dep=nvat12dep,
                                t0=t0,
                                t1=t1,
                                t2=t2,
@@ -1460,8 +1483,12 @@ idm <- function(formula01,
               "modelPar2 02",
               "modelPar1 12",
               "modelPar2 12")
-              rownames(beta) <-c(theta_names,Xnames01,Xnames02,Xnames12)
-              names(fix)<-c(theta_names,c(Xnames01,Xnames02,Xnames12))
+              
+              XnamesTemp <- c(Xnames01,Xnames02,Xnames12)
+              if (timedep12) XnamesTemp <- c(Xnames01,Xnames02,Xnames12,"IllnessTime")
+              
+              rownames(beta) <-c(theta_names,XnamesTemp)
+              names(fix)<-c(theta_names,XnamesTemp)
               rownames(lambda)<-c("lambda01","lambda02","lambda12")
               
               modelPar<-beta[1:6,]
