@@ -1742,7 +1742,7 @@ subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
 			res202num,res212num,res20101num,&
 			res20102num,res20112num,res20202num,&
 			res20212num,res21212num,&
-			vet01,vet02,vet12)
+			vet01,vet02,vet12,,gamma)
                         
 			v=res2denum*(su12**vet12)
 
@@ -1953,7 +1953,7 @@ subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
 			res2denum,res201num,res202num,res212num,&
 			res20101num,res20102num,&
 			res20112num,res20202num,res20212num,&
-			res21212num,vet01,vet02,vet12)
+			res21212num,vet01,vet02,vet12,gamma)
 
 			v=res2denum*(su12**vet12)*ri12*vet12
 
@@ -2172,7 +2172,7 @@ subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
 				call qgausscas2weib(t1(i),t3(i),the01,the02,the12,&
 				res2denum,res201num,res202num,res212num,res20101num,&
 				res20102num,res20112num,res20202num,res20212num,&
-				res21212num,vet01,vet02,vet12)
+				res21212num,vet01,vet02,vet12,gamma)
 
 				
 				v=(su12**vet12)*res2denum+&
@@ -2339,7 +2339,7 @@ subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
         			the12,res2denum,res201num,res202num,res212num,&
         			res20101num,res20102num,&
 			  	res20112num,res20202num,res20212num,res21212num,&
-        			vet01,vet02,vet12)
+        			vet01,vet02,vet12,gamma)
 				
 				
 				v=(su12**vet12)*ri12*vet12*res2denum+&
