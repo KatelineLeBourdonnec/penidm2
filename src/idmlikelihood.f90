@@ -14,7 +14,7 @@
         implicit none
          
         double precision::res,res1,res2,tronc, &
-        vet01,vet12,vet02
+        vet01,vet12,vet02, gamma
 	double precision, intent(inout)::likelihood_res
         integer::np0,i,j,l,w,k,npar0,nva01,nva12,nva02,no0, &
 	nz010,nz020,nz120,troncature0,gausspoint0,dimnva01,dimnva02,dimnva12
@@ -1412,7 +1412,7 @@ subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
          
         double precision::res2denum,res201num,res202num,res212num, &
 	res20101num,res20102num,res20112num,res20202num,res20212num,&
-	res21212num,vet01,vet12,vet02,resint,v,u1,u2,u3
+	res21212num,vet01,vet12,vet02,resint,v,u1,u2,u3, gamma
         integer::np0,i,j,l,w,k,lfix, kfix,npar0,nva01,nva12,nva02,no0, &
 	nz010,nz020,nz120,troncature0,gausspoint0,dimnva01,dimnva02,dimnva12, & 
 	nva01nofix,nva12nofix,nva02nofix,nvamax, sizespline,nva0102,&
