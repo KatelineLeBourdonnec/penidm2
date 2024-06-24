@@ -678,7 +678,7 @@ endif
 !================================  QGAUS : CHEBYCHEV   ==========================
       subroutine qgaussPL(cas,a,b,c, the01,the12,the02,res,v1,v2_ref,v3,gamma)
 
-  	use commun,only:zi01,zi12,zi02,nz01,nz12,nz02
+  	use commun,only:zi01,zi12,zi02,nz01,nz12,nz02,zi12_T
 
          implicit none
          
@@ -689,7 +689,7 @@ endif
         double precision,dimension(-2:(nz02-1))::the02
          double precision,dimension(5)::w,x
          double precision::xx,f1,su01,ri01,ri12,f2,su12,su02,ri02,gl01,gl02,gl12
-         double precision::ri12_T,zi12_T,gl12_T, su12_T, v2dem, v12dem
+         double precision::ri12_T,gl12_T, su12_T, v2dem, v12dem
 	 save w,x
          data w/0.2955242247d0,0.2692667193d0,0.2190863625d0, &
                0.1494513491d0,0.0666713443d0/
@@ -891,7 +891,7 @@ res01num,res02num,res12num,res0101num,res0102num,res0112num,&
 res0202num,res0212num,res1212num,v01,v02,v12_ref,gamma)
 
         implicit none
-         double precision a,b,the01(2),the02(2),the12(2)
+         double precision a,b,the01(2),the02(2),the12(2), v12dem
          double precision dx,xm,xr,resabsdenum,reskdenum,&
          reskhdenum,resascdenum,resgdenum,resdenum, & 
 	resabs01num,resk01num,reskh01num,resasc01num,resg01num,res01num, & 
