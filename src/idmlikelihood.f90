@@ -624,51 +624,48 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref,gamma)
 res = 0.d0
 if (a.eq.b) then
     res = 0.d0
-else
-    if ((cas.eq.2) .or. (cas.eq.6)) then
-        do 11 j = 1, 5
-            dx = xr * x(j)
-            xx = xm + dx
-            call fonct(xx, the01, ri01, gl01, su01)
-            call fonct(xx, the02, ri02, gl02, su02)
-            call fonct(xx, the12, ri12, gl12, su12)
-            ! Ajouter ici appel à fonct mais en T et non en u
-            call fonct(c, the12, ri12_T, gl12_T, su12_T)
-            f1 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01  / (su12**v12)
+else if ((cas.eq.2) .or. (cas.eq.6)) then
+    do 11 j = 1, 5
+        dx = xr * x(j)
+        xx = xm + dx
+        call fonct(xx, the01, ri01, gl01, su01)
+        call fonct(xx, the02, ri02, gl02, su02)
+        call fonct(xx, the12, ri12, gl12, su12)
+        ! Ajouter ici appel à fonct mais en T et non en u
+        call fonct(c, the12, ri12_T, gl12_T, su12_T)
+        f1 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01  / (su12**v12)
 
-            xx = xm - dx
-            call fonct(xx, the01, ri01, gl01, su01)
-            call fonct(xx, the02, ri02, gl02, su02)
-            call fonct(xx, the12, ri12, gl12, su12)
-            ! Ajouter ici appel à fonct mais en T et non en u
-            call fonct(c, the12, ri12_T, gl12_T, su12_T)
-            f2 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 / (su12**v12)
-            res = res + w(j) * (f1 + f2)
-        end do
-    else
-        if ((cas.eq.4) .or. (cas.eq.7)) then
-            do 11 j = 1, 5
-                dx = xr * x(j)
-                xx = xm + dx
-                call fonct(xx, the01, ri01, gl01, su01)
-                call fonct(xx, the02, ri02, gl02, su02)
-                call fonct(xx, the12, ri12, gl12, su12)
-                ! Ajouter ici appel à fonct mais en T et non en u
-                call fonct(c, the12, ri12_T, gl12_T, su12_T)
-                f1 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 * ri12_T * v12 / (su12**v12)
+        xx = xm - dx
+        call fonct(xx, the01, ri01, gl01, su01)
+        call fonct(xx, the02, ri02, gl02, su02)
+        call fonct(xx, the12, ri12, gl12, su12)
+        ! Ajouter ici appel à fonct mais en T et non en u
+        call fonct(c, the12, ri12_T, gl12_T, su12_T)
+        f2 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 / (su12**v12)
+        res = res + w(j) * (f1 + f2)
+    end do
+else if ((cas.eq.4) .or. (cas.eq.7)) then
+    do 11 j = 1, 5
+        dx = xr * x(j)
+        xx = xm + dx
+        call fonct(xx, the01, ri01, gl01, su01)
+        call fonct(xx, the02, ri02, gl02, su02)
+        call fonct(xx, the12, ri12, gl12, su12)
+        ! Ajouter ici appel à fonct mais en T et non en u
+        call fonct(c, the12, ri12_T, gl12_T, su12_T)
+        f1 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 * ri12_T * v12 / (su12**v12)
 
-                xx = xm - dx
-                call fonct(xx, the01, ri01, gl01, su01)
-                call fonct(xx, the02, ri02, gl02, su02)
-                call fonct(xx, the12, ri12, gl12, su12)
-                ! Ajouter ici appel à fonct mais en T et non en u
-                call fonct(c, the12, ri12_T, gl12_T, su12_T)
-                f2 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 * ri12_T * v12 / (su12**v12)
-                res = res + w(j) * (f1 + f2)
-            end do
-        endif
-    endif
-endif
+        xx = xm - dx
+        call fonct(xx, the01, ri01, gl01, su01)
+        call fonct(xx, the02, ri02, gl02, su02)
+        call fonct(xx, the12, ri12, gl12, su12)
+        ! Ajouter ici appel à fonct mais en T et non en u
+        call fonct(c, the12, ri12_T, gl12_T, su12_T)
+        f2 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 * ri12_T * v12 / (su12**v12)
+        res = res + w(j) * (f1 + f2)
+    end do
+end if
+
 
             res = res*xr
           
