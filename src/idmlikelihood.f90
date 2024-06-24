@@ -689,7 +689,7 @@ endif
         double precision,dimension(-2:(nz02-1))::the02
          double precision,dimension(5)::w,x
          double precision::xx,f1,su01,ri01,ri12,f2,su12,su02,ri02,gl01,gl02,gl12
-         double precision::ri12_T,zi12_T,gl12_T
+         double precision::ri12_T,zi12_T,gl12_T, su12_T, v2dem, v12dem
 	 save w,x
          data w/0.2955242247d0,0.2692667193d0,0.2190863625d0, &
                0.1494513491d0,0.0666713443d0/
