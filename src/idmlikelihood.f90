@@ -186,7 +186,7 @@ if(c(i).eq.1) then
 else if(c(i).eq.2) then
     ! cpi 0-->1
     if(gausspoint.eq.10) then
-        call qgaussPL(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
+        call qgaussPL(c(i), t1(i), t2(i), t3(i), the01, the12, the02, res2, vet01, vet12, vet02)
     else if(gausspoint.eq.15) then
         call qgaussPL15(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
     end if
@@ -202,7 +202,7 @@ else if(c(i).eq.3) then
 else if(c(i).eq.4) then
     ! cpi 0-->1 et obs 1-->2
     if(gausspoint.eq.10) then
-        call qgaussPL(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
+        call qgaussPL(c(i), t1(i), t2(i), t3(i), the01, the12, the02, res2, vet01, vet12, vet02)
     else if(gausspoint.eq.15) then
         call qgaussPL15(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
     end if
@@ -218,7 +218,7 @@ else if(c(i).eq.5) then
 else if(c(i).eq.6) then
     ! vivant ???
     if(gausspoint.eq.10) then
-        call qgaussPL(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
+        call qgaussPL(c(i), t1(i), t2(i), t3(i), the01, the12, the02, res2, vet01, vet12, vet02)
     else if(gausspoint.eq.15) then
         call qgaussPL15(c(i), t1(i), t2(i), the01, the12, the02, res2, vet01, vet12, vet02)
     end if
@@ -229,7 +229,7 @@ else
     ! passage 0-->2
     call susp(t3(i), the12, nz12, su12, ri12, zi12, gl12)
     if(gausspoint.eq.10) then
-        call qgaussPL(c(i), t1(i), t3(i), the01, the12, the02, res2, vet01, vet12, vet02)
+        call qgaussPL(c(i), t1(i), t3(i),t3(i), the01, the12, the02, res2, vet01, vet12, vet02)
     else if(gausspoint.eq.15) then
         call qgaussPL15(c(i), t1(i), t3(i), the01, the12, the02, res2, vet01, vet12, vet02)
     end if
