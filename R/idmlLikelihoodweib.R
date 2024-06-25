@@ -44,7 +44,7 @@
 #' 
 
 idmlLikelihoodweib<-function(b,npm,npar,bfix,fix,ctime,no,ve01,ve02,ve12,
-                             dimnva01,dimnva02,dimnva12,nva01,nva02,nva12,nva12dep,
+                             dimnva01,dimnva02,dimnva12,nva01,nva02,nva12,
                              t0,t1,t2,t3,troncature){
   res<-0
   
@@ -66,7 +66,7 @@ idmlLikelihoodweib<-function(b,npm,npar,bfix,fix,ctime,no,ve01,ve02,ve12,
            as.integer(nva01),
            as.integer(nva12),
            as.integer(nva02),
-           as.integer(nva12dep),
+           
            
            as.double(t0),
            as.double(t1),
