@@ -7,7 +7,7 @@
 
       subroutine idmlikelihood(b0,np0,npar0,bfix0,fix0,zi010,zi120,zi020,c0,&
       no0,nz010,nz120,nz020,ve010,ve120,ve020,&
-        dimnva01,dimnva12,dimnva02,nva01,nva12,nva02,t00,t10,t20,&
+        dimnva01,dimnva12,dimnva02,nva01,nva12,nva02,nva12dep,t00,t10,t20,&
         t30,troncature0,gausspoint0,likelihood_res)
 
 	use commun
