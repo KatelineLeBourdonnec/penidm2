@@ -282,7 +282,7 @@ end if
         vet01,vet12,vet02,gamma
 	double precision, intent(inout)::likelihood_res
         integer::np0,i,j,l,w,k,npar0,nva01,nva12,nva02,no0, &
-	troncature0,dimnva01,dimnva02,dimnva12, nva12dep
+	troncature0,dimnva01,dimnva02,dimnva12
 
 	double precision,dimension(np0)::b0
         double precision,dimension(npar0)::bh
