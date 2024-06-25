@@ -90,9 +90,18 @@
         ! we need to put bh at its original values if in posfix 
 
 
+
+! KLB : add gamma for time-dep in 12
+	gamma=0
+	if (nva12dep.eq.1) then
+		gamma = bh(npar0)
+	end if
+
+
+
+
        l=0
        w=0
-
 
        do k=1,(np0+sum(fix))
          if(fix(k).eq.0) then
