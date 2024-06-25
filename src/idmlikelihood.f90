@@ -17,7 +17,7 @@
         vet01,vet12,vet02, gamma
 	double precision, intent(inout)::likelihood_res
         integer::np0,i,j,l,w,k,npar0,nva01,nva12,nva02,no0, &
-	nz010,nz020,nz120,troncature0,gausspoint0,dimnva01,dimnva02,dimnva12
+	nz010,nz020,nz120,troncature0,gausspoint0,dimnva01,dimnva02,dimnva12,nva12dep
 
 	double precision,dimension(np0)::b0
         double precision,dimension(npar0)::bh
