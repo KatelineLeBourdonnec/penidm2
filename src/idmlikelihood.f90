@@ -1404,7 +1404,7 @@ res0202num,res0212num,res1212num,v01,v02,v12_ref,gamma)
 
 
 subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
-        dimnva01,dimnva12,dimnva02,nva01,nva12,nva02,t00,&
+        dimnva01,dimnva12,dimnva02,nva01,nva12,nva02,nva12dep,t00,&
         t10,t20,t30,troncature0,likelihood_deriv)
 	
 	use commun
@@ -1416,7 +1416,7 @@ subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
         integer::np0,i,j,l,w,k,lfix, kfix,npar0,nva01,nva12,nva02,no0, &
 	nz010,nz020,nz120,troncature0,gausspoint0,dimnva01,dimnva02,dimnva12, & 
 	nva01nofix,nva12nofix,nva02nofix,nvamax, sizespline,nva0102,&
-	nvamax01,nvamax0102,nvamax0112,nvamax02,nvamax0212,nvamax12
+	nvamax01,nvamax0102,nvamax0112,nvamax02,nvamax0212,nvamax12,nva12dep
 
 	double precision,dimension(np0+np0*(np0+1)/2),intent(inout)::likelihood_deriv
 	double precision,dimension(np0)::b0
@@ -2544,7 +2544,7 @@ subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
 
  subroutine derivaspline(b0,np0,npar0,bfix0,fix0,zi010,zi120,&
       zi020,c0,no0,nz010,nz120,nz020,ve010,ve120,ve020,&
-        dimnva01,dimnva12,dimnva02,nva01,nva12,nva02,t00,&
+        dimnva01,dimnva12,dimnva02,nva01,nva12,nva02,nva12dep,t00,&
         t10,t20,t30,troncature0,likelihood_deriv)
 	
 	use commun
@@ -2553,7 +2553,7 @@ subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
         double precision::res2denum,res201num,res202num,res212num, &
 	res20101num,res20102num,res20112num,res20202num,res20212num,&
 	res21212num,vet01,vet12,vet02,resint,v,u1,u2,u3
-        integer::np0,i,j,l,w,k,lfix, kfix,npar0,nva01,nva12,nva02,no0, &
+        integer::np0,i,j,l,w,k,lfix, kfix,npar0,nva01,nva12,nva02,nva12dep,no0, &
 	nz010,nz020,nz120,troncature0,gausspoint0,dimnva01,dimnva02,dimnva12, & 
 	nva01nofix,nva12nofix,nva02nofix,nvamax, sizespline,nva0102,&
 	nvamax01,nvamax0102,nvamax0112,nvamax02,nvamax0212,nvamax12
