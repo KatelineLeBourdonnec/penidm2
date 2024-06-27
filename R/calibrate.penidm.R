@@ -256,7 +256,8 @@ calibrate.penidm <- function(
                 nlambda01=50,
                 nlambda02=50,
                 nlambda12=50,
-                timedep12=FALSE,
+                timedep12=F,
+                
                 penalty="lasso",
                 penalty.factor=NULL,
                 alpha=ifelse(penalty=="scad",3.7,
