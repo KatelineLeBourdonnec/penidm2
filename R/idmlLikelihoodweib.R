@@ -66,8 +66,7 @@ idmlLikelihoodweib<-function(b,npm,npar,bfix,fix,ctime,no,ve01,ve02,ve12,
            as.integer(nva01),
            as.integer(nva12),
            as.integer(nva02),
-           
-           
+           as.integer(nva12dep),
            as.double(t0),
            as.double(t1),
            as.double(t2),
