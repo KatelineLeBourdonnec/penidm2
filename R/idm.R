@@ -1332,7 +1332,8 @@ idm <- function(formula01,
                              t1=t1,
                              t2=t2,
                              t3=t3,
-                             troncature=troncature)
+                             troncature=troncature,
+                             print.info = F)
             
             # take thoses values if converged only otherwise thoses
             # by default or by the user
