@@ -97,6 +97,7 @@
 #' @param nlambda01 number of Lambda on transition 0 --> 1
 #' @param nlambda02 number of Lambda on transition 0 --> 2
 #' @param nlambda12 number of Lambda on transition 1 --> 2
+#'@param timedep12 by default = FALSE
 #' @param alpha alpha on all transitions 
 #' @param penalty which penalty to consider
 #' @param penalty.factor which variable should be penalised
@@ -255,6 +256,7 @@ calibrate.penidm <- function(
                 nlambda01=50,
                 nlambda02=50,
                 nlambda12=50,
+                timedep12=FALSE,
                 penalty="lasso",
                 penalty.factor=NULL,
                 alpha=ifelse(penalty=="scad",3.7,
@@ -328,6 +330,7 @@ calibrate.penidm <- function(
                  nlambda01=nlambda01,
                  nlambda02=nlambda02,
                  nlambda12=nlambda12,
+                 timedep12=timedep12,
                  penalty=penalty,
                  penalty.factor=penalty.factor,
                  alpha=alpha,
@@ -376,6 +379,7 @@ calibrate.penidm <- function(
                      nlambda01=nlambda01,
                      nlambda02=nlambda02,
                      nlambda12=nlambda12,
+                     timedep12=timedep12,
                      penalty=penalty,
                      penalty.factor=penalty.factor,
                      alpha=alpha,
