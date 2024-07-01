@@ -73,7 +73,7 @@ idmlLikelihoodweib<-function(b,npm,npar,bfix,fix,ctime,no,ve01,ve02,ve12,
            as.double(t3),
            as.integer(troncature),
            likelihood_res=as.double(res),
-           PACKAGE="SmoothHazardoptim9")$likelihood_res
+           PACKAGE="SmoothHazardoptim10")$likelihood_res
 }
 
 
