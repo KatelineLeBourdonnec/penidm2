@@ -657,12 +657,12 @@ else
                   call fonct(xx,the01,ri01,gl01,su01)
                   call fonct(xx,the02,ri02,gl02,su02)
                   call fonct(xx,the12,ri12,gl12,su12)
-                  f1 = (su01**v01)*(su02**v02)*(su12**vet12)*ri01*v01/(su12**v12)
+                  f1 = (su01**v01)*(su02**v02)*(su12**v12)*ri01*v01/(su12**v12)
                   xx = xm-dx
                   call fonct(xx,the01,ri01,gl01,su01)
                   call fonct(xx,the02,ri02,gl02,su02)
                   call fonct(xx,the12,ri12,gl12,su12)
-                  f2 = ((su01**v01)*(su02**v02)*(su12**vet12)*ri01*v01)/(su12**v12)
+                  f2 = ((su01**v01)*(su02**v02)*(su12**v12)*ri01*v01)/(su12**v12)
                   res = res + w(j)*(f1+f2)
  11            continue 
        else
@@ -672,12 +672,12 @@ else
                   call fonct(xx,the01,ri01,gl01,su01)
                   call fonct(xx,the02,ri02,gl02,su02)
                   call fonct(xx,the12,ri12,gl12,su12)
-                  f1 = (su01**v01)*(su02**v02)*(su12**vet12)*ri12*vet12*ri01*v01/(su12**v12)
+                  f1 = (su01**v01)*(su02**v02)*(su12**v12)*ri12*v12*ri01*v01/(su12**v12)
                   xx = xm-dx
                   call fonct(xx,the01,ri01,gl01,su01)
                   call fonct(xx,the02,ri02,gl02,su02)
                   call fonct(xx,the12,ri12,gl12,su12)
-                  f2 = ((su01**v01)*(su02**v02)*(su12**vet12)*ri12*vet12*ri01*v01)/(su12**v12)
+                  f2 = ((su01**v01)*(su02**v02)*(su12**v12)*ri12*v12*ri01*v01)/(su12**v12)
                   res = res + w(j)*(f1+f2)
  11            continue
         endif
