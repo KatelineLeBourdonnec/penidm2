@@ -455,7 +455,7 @@ end if
                         res1 = res1 -(gl12*vet12)
                     else   
                        if(c(i).eq.4)then ! cpi 0-->1 et obs 1-->2
-			print *, 'Cas 4'
+			print *, 'Cas 4 test'
 			print *, 'donnees = ', c
 			print *, 'The01 = ', the01
 	!		print *, 'T2 = ', t2(i)
