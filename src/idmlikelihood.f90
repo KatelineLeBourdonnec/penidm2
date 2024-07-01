@@ -459,6 +459,13 @@ end if
                         call  qgauss1(c(i),t1(i),t2(i),t3(i),the01,the02,the12,&
                         res2,vet01,vet02,vet12, gamma)
                         res1=dlog(res2)
+                        
+                        
+                         print *, 'Cas 4'
+                         print *, 'qgauss = ', res2
+                        
+                        
+                        
                        else
                          if(c(i).eq.5)then ! obs 0-->1 et obs 1-->2
 				call fonct(t1(i),the01,ri01,gl01,su01)
@@ -627,7 +634,8 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref,gamma)
    		v12dem = exp(gamma*xm)
    		v12 = v12_ref*v12dem
 
-
+ print *, 'Le V12 = ', v12
+    
 
 
 if (a .eq. b) then
