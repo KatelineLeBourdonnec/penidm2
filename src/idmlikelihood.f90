@@ -456,8 +456,11 @@ end if
                     else   
                        if(c(i).eq.4)then ! cpi 0-->1 et obs 1-->2
 			print *, 'Cas 4'
-			print *, 'donnees = ', c(i),t1(i),t2(i),t3(i),the01,the02,the12,&
-                        res2,vet01,vet02,vet12, gamma
+			print *, 'donnees = ', c(i)
+			print *, 'T1 = ', t1(i)
+			print *, 'T2 = ', t2(i)
+			print *, 'T3 = ', t3(i)
+                        
                         call  qgauss1(c(i),t1(i),t2(i),t3(i),the01,the02,the12,&
                         res2,vet01,vet02,vet12, gamma)
                         res1=dlog(res2)
