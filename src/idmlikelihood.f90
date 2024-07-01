@@ -681,6 +681,7 @@ else
                   res = res + w(j)*(f1+f2)
  11            continue
         endif
+        endif
         
   else      
 
