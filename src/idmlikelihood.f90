@@ -634,7 +634,8 @@ if (a.eq.b) then
     res = 0.d0
 else
   if (gamma.eq.0) then
-  do 11 j=1,5
+     if ((cas.eq.1) .or. (cas.eq.3) .or. (cas.eq.5)) then
+          do 11 j=1,5
                   dx=xr*x(j)
                   xx = xm+dx
                   call fonct(xx,the01,ri01,gl01,su01)
@@ -648,8 +649,40 @@ else
                   f2 = ((su01**v01)*(su02**v02)*ri01*v01)/(su12**v12)
                   res = res + w(j)*(f1+f2)
  11            continue
-  else
-  
+      else
+      if ((cas.eq.2) .or. (cas.eq.6)) then
+          do 11 j=1,5
+                  dx=xr*x(j)
+                  xx = xm+dx
+                  call fonct(xx,the01,ri01,gl01,su01)
+                  call fonct(xx,the02,ri02,gl02,su02)
+                  call fonct(xx,the12,ri12,gl12,su12)
+                  f1 = (su01**v01)*(su02**v02)*(su12**vet12)*ri01*v01/(su12**v12)
+                  xx = xm-dx
+                  call fonct(xx,the01,ri01,gl01,su01)
+                  call fonct(xx,the02,ri02,gl02,su02)
+                  call fonct(xx,the12,ri12,gl12,su12)
+                  f2 = ((su01**v01)*(su02**v02)*(su12**vet12)*ri01*v01)/(su12**v12)
+                  res = res + w(j)*(f1+f2)
+ 11            continue 
+       else
+        do 11 j=1,5
+                  dx=xr*x(j)
+                  xx = xm+dx
+                  call fonct(xx,the01,ri01,gl01,su01)
+                  call fonct(xx,the02,ri02,gl02,su02)
+                  call fonct(xx,the12,ri12,gl12,su12)
+                  f1 = (su01**v01)*(su02**v02)*(su12**vet12)*ri12*vet12*ri01*v01/(su12**v12)
+                  xx = xm-dx
+                  call fonct(xx,the01,ri01,gl01,su01)
+                  call fonct(xx,the02,ri02,gl02,su02)
+                  call fonct(xx,the12,ri12,gl12,su12)
+                  f2 = ((su01**v01)*(su02**v02)*(su12**vet12)*ri12*vet12*ri01*v01)/(su12**v12)
+                  res = res + w(j)*(f1+f2)
+ 11            continue
+        endif
+        
+  else      
 
     if ((cas.eq.2) .or. (cas.eq.6)) then
         do j = 1, 5
@@ -695,7 +728,7 @@ else
         endif
     endif
 endif
-endif
+
 
 
             res = res*xr
