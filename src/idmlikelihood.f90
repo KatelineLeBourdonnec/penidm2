@@ -689,19 +689,19 @@ else
                 call fonct(xx, the12, ri12, gl12, su12)
                 ! Ajouter ici appel à fonct mais en T et non en u
                 call fonct(c, the12, ri12_T, gl12_T, su12_T)
-                f1 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 * ri12_T * v12 / (su12**v12)
+                f1 = (su01**v01) * (su02**v02) * ri01 * v01  / (su12**v12)
                 xx = xm - dx
                 call fonct(xx, the01, ri01, gl01, su01)
                 call fonct(xx, the02, ri02, gl02, su02)
                 call fonct(xx, the12, ri12, gl12, su12)
                 ! Ajouter ici appel à fonct mais en T et non en u
                 call fonct(c, the12, ri12_T, gl12_T, su12_T)
-                f2 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 * ri12_T * v12 / (su12**v12)
+                f2 = (su01**v01) * (su02**v02)  * ri01 * v01  / (su12**v12)
                
                
                !print *, 'Test cas 4 Qgauss', cas, xx, c, v12, su12_T, su12
                
-                res = res + w(j) * (f1 + f2)
+                res = res + w(j) * (f1 + f2) * (su12_T**v12) * ri12_T * v12
                 print *, 'f1 et f2', f1, f2
                 
             end do
