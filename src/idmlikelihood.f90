@@ -462,7 +462,7 @@ end if
                         res2,vet01,vet02,vet12, gamma)
                         res1=dlog(res2)
                         
-               print *, 'Cas 4 test 3', c(i), t1(i), t2(i), t3(i), the01, the02,&
+              ! print *, 'Cas 4 test 3', c(i), t1(i), t2(i), t3(i), the01, the02,&
                the12, vet01, vet02, vet12,gamma, res2, res1
    
                          
@@ -697,6 +697,10 @@ else
                 ! Ajouter ici appel à fonct mais en T et non en u
                 call fonct(c, the12, ri12_T, gl12_T, su12_T)
                 f2 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 * ri12_T * v12 / (su12**v12)
+               
+               
+               print *, 'Test cas 4 Qgauss', cas, xx, c
+               
                 res = res + w(j) * (f1 + f2)
             end do
         endif
