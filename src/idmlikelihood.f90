@@ -524,7 +524,7 @@ end if
 
 
 123     continue 
-	 
+	 print *, 'Cas = ', c
 	deallocate(b,bfix,fix,ve01,ve02,ve12,t0,t1,t2,t3,c)
 
         end subroutine idmlikelihoodweib
@@ -643,7 +643,7 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref,gamma)
    		v12dem = exp(gamma*xm)
    		v12 = v12_ref*v12dem
 
-print *, 'Cas = ', cas
+
     
 
 
