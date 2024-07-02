@@ -462,7 +462,9 @@ end if
                         res2,vet01,vet02,vet12, gamma)
                         res1=dlog(res2)
                         
-                print *, 'Cas 4 test 3', c(i),t1(i),t2(i),t3(i),the01,the02,the12,vet01,vet02,vet12,& gamma, res2, res1        
+               print *, 'Cas 4 test 3', c(i), t1(i), t2(i), t3(i), the01, the02,&
+               the12, vet01, vet02, vet12,gamma, res2, res1
+   
                          
                       
                         
