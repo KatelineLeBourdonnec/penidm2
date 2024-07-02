@@ -455,9 +455,7 @@ end if
                         res1 = res1 -(gl12*vet12)
                     else   
                        if(c(i).eq.4)then ! cpi 0-->1 et obs 1-->2
-	  print *, 'Cas 4 test 3'
-    
-  !  print *, 'c(', i, ') = ', c(i)
+	  print *, 'Cas 4 test 3', c(i)
   !  print *, 't1(', i, ') = ', t1(i)
   !  print *, 't2(', i, ') = ', t2(i)
   !  print *, 't3(', i, ') = ', t3(i)
@@ -524,7 +522,7 @@ end if
 
 
 123     continue 
-	 print *, 'Cas = ', c
+	 
 	deallocate(b,bfix,fix,ve01,ve02,ve12,t0,t1,t2,t3,c)
 
         end subroutine idmlikelihoodweib
