@@ -27,8 +27,9 @@ idm.weib <- function(b,fix0,size_V,
       if(size_V>6){
         fix.weib[(6+1):size_V]<-1}
 
-      output.mla<- marqLevAlg::mla(b=start.weib,
+       output.mla<- marqLevAlg::mla(b=start.weib,
                        fn=idmlLikelihoodweib,
+                       gr=derivaweib,
                        epsa=epsa,
                        epsb=epsb,
                        epsd=epsd,
@@ -71,6 +72,7 @@ idm.weib <- function(b,fix0,size_V,
   # maximise loglik 
   out<- marqLevAlg::mla(b=b,
                     fn=idmlLikelihoodweib,
+                    gr=derivaweib,
                     epsa=epsa,
                     epsb=epsb,
                     epsd=epsd,
