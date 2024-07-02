@@ -457,7 +457,7 @@ end if
                        if(c(i).eq.4)then ! cpi 0-->1 et obs 1-->2
 			print *, 'Cas 4 test'
 			print *, 'donnees = ', c
-			print *, 'The01 = ', the01
+		!	print *, 'The01 = ', the01
 	!		print *, 'T2 = ', t2(i)
 	!		print *, 'T3 = ', t3(i)
                         
