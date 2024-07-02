@@ -699,9 +699,11 @@ else
                 f2 = (su01**v01) * (su02**v02) * (su12_T**v12) * ri01 * v01 * ri12_T * v12 / (su12**v12)
                
                
-               print *, 'Test cas 4 Qgauss', cas, xx, c, v12, su12_T, su12
+               !print *, 'Test cas 4 Qgauss', cas, xx, c, v12, su12_T, su12
                
                 res = res + w(j) * (f1 + f2)
+                print *, 'f1 et f2', f1, f2
+                
             end do
         endif
     endif
