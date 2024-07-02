@@ -703,6 +703,7 @@ else
                
                 res = res + w(j) * (f1 + f2) * (su12_T**v12) * ri12_T * v12
                 print *, 'f1 et f2', f1, f2
+                Print *, 'su12_T X vet12 et ri12_T X vet12 :', su12_T**v12, ri12_T*v12 
                 
             end do
         endif
