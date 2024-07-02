@@ -455,15 +455,15 @@ end if
                         res1 = res1 -(gl12*vet12)
                     else   
                        if(c(i).eq.4)then ! cpi 0-->1 et obs 1-->2
-	  print *, 'Cas 4 test 2'
+	  print *, 'Cas 4 test 3'
     
-    print *, 'c(', i, ') = ', c(i)
-    print *, 't1(', i, ') = ', t1(i)
-    print *, 't2(', i, ') = ', t2(i)
-    print *, 't3(', i, ') = ', t3(i)
-    print *, 'the01 = ', the01
-    print *, 'the02 = ', the02
-    print *, 'the12 = ', the12
+  !  print *, 'c(', i, ') = ', c(i)
+  !  print *, 't1(', i, ') = ', t1(i)
+  !  print *, 't2(', i, ') = ', t2(i)
+  !  print *, 't3(', i, ') = ', t3(i)
+  !  print *, 'the01 = ', the01
+  !  print *, 'the02 = ', the02
+  !  print *, 'the12 = ', the12
     
                         call  qgauss1(c(i),t1(i),t2(i),t3(i),the01,the02,the12,&
                         res2,vet01,vet02,vet12, gamma)
@@ -471,7 +471,7 @@ end if
                         
                         
                          
-                        ! print *, 'qgauss = ', res2
+                        print *, 'qgauss = ', res1
                         ! print *, 'Le V12 = ', v12
                         
                         
@@ -643,7 +643,7 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref,gamma)
    		v12dem = exp(gamma*xm)
    		v12 = v12_ref*v12dem
 
-! print *, 'Le V12 = ', v12
+print *, 'Cas = ', cas
     
 
 
