@@ -362,9 +362,6 @@ end if
 	if (nva12dep.eq.1) then
 		gamma = bh(npar0)
 	end if
-	
-	
-	print *,"vectparms",bh
 
          do i=1,2
             the01(i)=(bh(i))*(bh(i))
@@ -443,7 +440,6 @@ end if
                 else
                 if(c(i).eq.2)then ! cpi 0-->1
 	
-	print *,"cas = 2",c(i)
                          call  qgauss1(c(i),t1(i),t2(i),t3(i),the01,the02,&
                          the12,res2,vet01,vet02,vet12,gamma)
                         res1=dlog(res2)
@@ -460,15 +456,14 @@ end if
                     else   
                        if(c(i).eq.4)then ! cpi 0-->1 et obs 1-->2
 	  
-	         !  print *, "no0", no0
-           ! print *, 'Cas 4 test 3', i, c(i), t1(i), t2(i), t3(i), the01, the02,&
-           ! the12, vet01, vet02, vet12,gamma, res2, res1
-    
+ 
+                        call fonct(t3(i),the12,ri12,gl12,su12)
                         call  qgauss1(c(i),t1(i),t2(i),t3(i),the01,the02,the12,&
                         res2,vet01,vet02,vet12, gamma)
-                        res1=dlog(res2)
+                        res1=dlog(res2)-dlog((su12**vet12)*ri12*vet12)
                         
-
+              print *, 'Cas, the01, the02, the12, res2, res1', c(i), the01, the02,&
+              the12, res2, res1
    
                          
                       
@@ -485,10 +480,7 @@ end if
                                 res1 = res1 -(gl12*vet12) + dlog(ri12*vet12)
                          else
                             if(c(i).eq.6)then ! vivant ???
-                            
-                            print *,"cas= 6",c(i)
-                            
-		                          	 call fonct(t3(i),the01,ri01,gl01,su01)
+				 call fonct(t3(i),the01,ri01,gl01,su01)
                                 call fonct(t3(i),the02,ri02,gl02,su02)
                                 
                                 call  qgauss1(c(i),t1(i),t3(i),t3(i),the01,the02,&
@@ -499,7 +491,6 @@ end if
 
                             else ! passage 0-->2  
 
-  print *,"cas = 7",c(i)
 				call fonct(t3(i),the01,ri01,gl01,su01)
                                 call fonct(t3(i),the02,ri02,gl02,su02)
                                
@@ -525,11 +516,10 @@ end if
 
         likelihood_res = res
 
-123     continue 
 
-  print *,"fin idmlikelihoodweib", likelihood_res
+123     continue 
 	 
-  deallocate(b,bfix,fix,ve01,ve02,ve12,t0,t1,t2,t3,c)
+	deallocate(b,bfix,fix,ve01,ve02,ve12,t0,t1,t2,t3,c)
 
         end subroutine idmlikelihoodweib
 
@@ -640,7 +630,7 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref,gamma)
          data x/0.1488743389d0,0.4333953941d0,0.6794095682d0,0.8650633666d0,0.9739065285d0/
 
          
-         xm = 0.5d0*(b+a)
+            xm = 0.5d0*(b+a)
             xr = 0.5d0*(b-a)
 
 ! ajouter ici a v12, l'effet de u
@@ -704,9 +694,6 @@ else
                 call fonct(xx, the01, ri01, gl01, su01)
                 call fonct(xx, the02, ri02, gl02, su02)
                 call fonct(xx, the12, ri12, gl12, su12)
-                
-                
-                
                 ! Ajouter ici appel à fonct mais en T et non en u
                 call fonct(c, the12, ri12_T, gl12_T, su12_T)
                 f2 = (su01**v01) * (su02**v02)  * ri01 * v01  / (su12**v12)
@@ -715,10 +702,8 @@ else
                !print *, 'Test cas 4 Qgauss', cas, xx, c, v12, su12_T, su12
                
                 res = res + w(j) * (f1 + f2) * (su12_T**v12) * ri12_T * v12
-             !   print *, 'f1 et f2', f1, f2
-             !   Print *, 'su12_T X vet12 et ri12_T X vet12 :', su12_T**v12, ri12_T*v12 
-             
-               Print *, 'su12_T v12 ri12_T v12:', su12_T,v12, ri12_T,v12 
+              !  print *, 'f1 et f2', f1, f2
+              !  Print *, 'su12_T X vet12 et ri12_T X vet12 :', su12_T**v12, ri12_T*v12 
                 
             end do
         endif
@@ -1500,7 +1485,6 @@ subroutine derivaweib(b0,np0,npar0,bfix0,fix0,c0,no0,ve010,ve120,ve020,&
 	gausspoint=gausspoint0
 	sizespline=6
 
-  print *, "entree derivaweib"
 
 	if(nva01.gt.0) then 
 	  nva01nofix=nva01-sum(fix((sizespline+1):(nva01+sizespline)))
