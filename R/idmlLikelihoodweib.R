@@ -32,6 +32,7 @@
 ##' @param nva02 number of variables for transition 0 -->2
 ##' @param nva12 number of variables for transition 1 -->2
 ##' @param nva12dep time dep transition 12
+##' @param semiMark indicator if semiMarkov or Markov
 ##' @param t0 time entry
 ##' @param t1 time L
 ##' @param t2 time R
@@ -44,10 +45,10 @@
 #' 
 
 idmlLikelihoodweib<-function(b,npm,npar,bfix,fix,ctime,no,ve01,ve02,ve12,
-                             dimnva01,dimnva02,dimnva12,nva01,nva02,nva12,nva12dep,
-                             t0,t1,t2,t3,troncature){
+                         dimnva01,dimnva02,dimnva12,nva01,nva02,nva12,nva12dep,
+                         semiMark,t0,t1,t2,t3,troncature){
   res<-0
-  
+
   .Fortran("idmlikelihoodweib",
            ## input
            as.double(b),
@@ -67,6 +68,7 @@ idmlLikelihoodweib<-function(b,npm,npar,bfix,fix,ctime,no,ve01,ve02,ve12,
            as.integer(nva12),
            as.integer(nva02),
            as.integer(nva12dep),
+           as.integer(semiMark),
            as.double(t0),
            as.double(t1),
            as.double(t2),

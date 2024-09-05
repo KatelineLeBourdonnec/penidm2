@@ -29,6 +29,8 @@
 #' }
 #' @useDynLib SmoothHazardoptim9
 #' @export
+#' 
+
 summary.idm <- function(object,conf.int=.95,digits=4,pvalDigits=4,eps=.0001, ...){
     if (!inherits(object,"idm")) stop("Object must be of class 'idm'")
   
@@ -50,10 +52,13 @@ summary.idm <- function(object,conf.int=.95,digits=4,pvalDigits=4,eps=.0001, ...
         if((sum(object$NC)>0)&&(object$converged==1)){
             n_base<-ifelse(object$method=="Weib",7,object$nknots01+object$nknots02+object$nknots12+6+1)
             se<-object$V[n_base:dim(object$V)[1],n_base:dim(object$V)[2]]
-            se<-sqrt(diag(se))
+            if(length(object$coef)==1)
+              se<-sqrt(se)
+            else
+              se<-sqrt(diag(se))
             wald <- (object$coef/se)**2
             z <- abs(qnorm((1 + conf.int)/2))
-            out <- data.frame("Hazard ratio"=format(round(exp(object$coef),digits)),
+            out <- data.frame("Hazard ratio"=format(round(exp(object$coef), digits)),
                               "Standard error"=format(round(se,digits)),
                               "CI"=paste("[",format(round(exp(object$coef - z * se),2)),";",format(round(exp(object$coef + z *se),2)),"]",sep=""),
                               "P-value"=format.pval(1 - pchisq(wald, 1),digits=pvalDigits,eps=eps))

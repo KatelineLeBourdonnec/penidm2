@@ -102,6 +102,7 @@
 #'  fix splines
 #' @param timedep12 boolean indicating whether the 12 transition intensity depends on the true 
 #' intermediate event time
+#' @param semiMarkov boolean indicating if it's semimarkov or markov
 #' @return
 #'
 #' \item{call}{the call that produced the result.} \item{coef}{regression
@@ -233,6 +234,8 @@ idm <- function(formula01,
                 nlambda02=50,
                 nlambda12=50,
                 timedep12=FALSE,
+                semiMarkov=TRUE,
+                
                 penalty=NULL,
                 penalty.factor=NULL,
                 alpha=ifelse(penalty=="scad",3.7,
@@ -311,14 +314,29 @@ idm <- function(formula01,
     else
         Xnames02 <- NULL
     ## formula12
+    nvat12dep <- as.numeric(timedep12)
+    
+    semiMark <- as.numeric(semiMarkov)
+    
+    
     x12 <- model.matrix(formula12,data=m12)[, -1, drop = FALSE]
     NC12 <- NCOL(x12)
+    
+    
 
-
-    if (NC12>0)
-        Xnames12 <- colnames(x12)
-    else
-        Xnames12 <- NULL
+    if (NC12>0 & nvat12dep!=1){
+        Xnames12 <- colnames(x12) 
+    }else{
+      if (nvat12dep==1){
+        
+        x12 <- cbind(x12,"IllnessTime"=1)
+        NC12 = NC12 + 1
+        Xnames12 <-colnames(x12)
+        m12 <- x12
+        }else{
+        Xnames12 <- NULL}}
+    
+    
 
 
     # }}}
@@ -421,12 +439,8 @@ idm <- function(formula01,
 
       #  	cat("------ Program Splines ------ \n")
       ## check knots
-
-    
-    # KLB: add the intermediate time in the 12 transition
-    nvat12dep <- as.numeric(timedep12)
-    
-    size1 <- NC01 + NC02 + NC12 + nvat12dep
+    #NC12 <- NC12 + nvat12dep
+    size1 <- NC01 + NC02 + NC12
     
 
     noVar<-c(ifelse(as.integer(NC01)>0,0,1),
@@ -698,7 +712,7 @@ idm <- function(formula01,
       
         out<-idm.no.penalty(b,clustertype,epsa,epsb,epsd,nproc,maxiter,size_V,size_spline,noVar,bfix,
                             fix0,knots01,knots02,knots12,ctime,N,nknots01,nknots02,nknots12,
-                            ve01,ve02,ve12,dimnva01,dimnva02,dimnva12,nvat01,nvat02,nvat12,nvat12dep,
+                            ve01,ve02,ve12,dimnva01,dimnva02,dimnva12,nvat01,nvat02,nvat12,
                             t0,t1,t2,t3,troncature,gauss.point,step.sequential,option.sequential)
   
       
@@ -819,6 +833,7 @@ idm <- function(formula01,
                                 nvat02=nvat02,
                                 nvat12=nvat12,
                                 nvat12dep=nvat12dep,
+                                semiMark = semiMark,
                                 t0=t0,
                                 t1=t1,
                                 t2=t2,
@@ -875,7 +890,7 @@ idm <- function(formula01,
           
           betaCoef <- beta[(6+1):size_V]
           names(betaCoef) <- c(Xnames01,Xnames02,Xnames12)
-          if (timedep12) names(betaCoef) <- c(Xnames01,Xnames02,Xnames12,"IllnessTime")
+          #if (timedep12) names(betaCoef) <- c(Xnames01,Xnames02,Xnames12,"IllnessTime")
           fit$coef <- betaCoef
           fit$HR <- exp(betaCoef)
           
@@ -891,7 +906,7 @@ idm <- function(formula01,
                          "modelPar2 12")
         
         XnamesTemp <- c(Xnames01,Xnames02,Xnames12)
-        if (timedep12) XnamesTemp <- c(Xnames01,Xnames02,Xnames12,"IllnessTime")
+       # if (timedep12) XnamesTemp <- c(Xnames01,Xnames02,Xnames12,"IllnessTime")
         
         names(beta)<- c(theta_names,XnamesTemp)
         names(fix)<- c(theta_names,XnamesTemp)
@@ -1048,7 +1063,6 @@ idm <- function(formula01,
                                   nva01=nvat01,
                                   nva02=nvat02,
                                   nva12=nvat12,
-                                  nva12dep=nvat12dep,
                                   t0=t0,
                                   t1=t1,
                                   t2=t2,
@@ -1128,7 +1142,6 @@ idm <- function(formula01,
                              nvat01=nvat01,
                              nvat02=nvat02,
                              nvat12=nvat12,
-                             nvat12dep=nvat12dep,
                              t0=t0,
                              t1=t1,
                              t2=t2,
@@ -1160,14 +1173,8 @@ idm <- function(formula01,
             
             theta_names <- cbind(c(rep("theta01",(nknots01+2)),rep("theta02",(nknots02+2)),rep("theta12",(nknots12+2))),c((1:(nknots01+2)),(1:(nknots02+2)),(1:(nknots12+2))))
             theta_names <- as.vector(apply(theta_names,1,paste,collapse=" "))
-            
-            
-            
-            XnamesTemp <- c(Xnames01,Xnames02,Xnames12)
-            if (timedep12) XnamesTemp <- c(Xnames01,Xnames02,Xnames12,"IllnessTime")
-            
-            rownames(beta) <-c(theta_names,XnamesTemp)
-            rownames(fix)<-c(theta_names,XnamesTemp)
+            rownames(beta) <-c(theta_names,c(Xnames01,Xnames02,Xnames12))
+            rownames(fix)<-c(theta_names,c(Xnames01,Xnames02,Xnames12))
             rownames(lambda)<-c("lambda01","lambda02","lambda12")
             
             theta01<-beta[1:(nknots01+2),]
@@ -1327,13 +1334,11 @@ idm <- function(formula01,
                              nva01=nvat01,
                              nva02=nvat02,
                              nva12=nvat12,
-                             nva12dep=nvat12dep,
                              t0=t0,
                              t1=t1,
                              t2=t2,
                              t3=t3,
-                             troncature=troncature,
-                             print.info = F)
+                             troncature=troncature)
             
             # take thoses values if converged only otherwise thoses
             # by default or by the user
@@ -1373,7 +1378,6 @@ idm <- function(formula01,
                                   nva01=nvat01,
                                   nva02=nvat02,
                                   nva12=nvat12,
-                                  nva12dep=nvat12dep,
                                   t0=t0,
                                   t1=t1,
                                   t2=t2,
@@ -1449,7 +1453,6 @@ idm <- function(formula01,
                                nvat01=nvat01,
                                nvat02=nvat02,
                                nvat12=nvat12,
-                               nvat12dep=nvat12dep,
                                t0=t0,
                                t1=t1,
                                t2=t2,
@@ -1484,12 +1487,8 @@ idm <- function(formula01,
               "modelPar2 02",
               "modelPar1 12",
               "modelPar2 12")
-              
-              XnamesTemp <- c(Xnames01,Xnames02,Xnames12)
-              if (timedep12) XnamesTemp <- c(Xnames01,Xnames02,Xnames12,"IllnessTime")
-              
-              rownames(beta) <-c(theta_names,XnamesTemp)
-              names(fix)<-c(theta_names,XnamesTemp)
+              rownames(beta) <-c(theta_names,Xnames01,Xnames02,Xnames12)
+              names(fix)<-c(theta_names,c(Xnames01,Xnames02,Xnames12))
               rownames(lambda)<-c("lambda01","lambda02","lambda12")
               
               modelPar<-beta[1:6,]
@@ -1678,6 +1677,7 @@ idm <- function(formula01,
             m<-m+1
           }
         }
+        
         
         if(NC12>0){
           for(k in 1:dim(m12)[2]){

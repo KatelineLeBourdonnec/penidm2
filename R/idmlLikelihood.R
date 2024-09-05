@@ -37,7 +37,6 @@
 ##' @param nva01 number of variables for transition 0 -->1 
 ##' @param nva02 number of variables for transition 0 -->2
 ##' @param nva12 number of variables for transition 1 -->2
-##' @param nva12dep dep transition 1 -->2
 ##' @param t0 time entry
 ##' @param t1 time L
 ##' @param t2 time R
@@ -51,7 +50,7 @@
 #' 
 
 idmlLikelihood<-function(b,npm,npar,bfix,fix,zi01,zi02,zi12,ctime,no,nz01,nz02,nz12,ve01,ve02,ve12,
-                         dimnva01,dimnva02,dimnva12,nva01,nva02,nva12,nva12dep,
+                         dimnva01,dimnva02,dimnva12,nva01,nva02,nva12,
                          t0,t1,t2,t3,troncature,gausspoint){
   res<-0
   #browser()
@@ -79,7 +78,6 @@ idmlLikelihood<-function(b,npm,npar,bfix,fix,zi01,zi02,zi12,ctime,no,nz01,nz02,n
            as.integer(nva01),
            as.integer(nva12),
            as.integer(nva02),
-           as.integer(nva12dep),
            as.double(t0),
            as.double(t1),
            as.double(t2),

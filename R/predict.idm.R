@@ -75,8 +75,9 @@
 #' }
 #'@useDynLib SmoothHazardoptim9
 #' @export
+
 predict.idm <- function(object,s,
-                        t,newdata,nsim=200,seed=21,conf.int=.95,lifeExpect=FALSE,maxtime,
+                        t,newdata,nsim=200,seed=21,conf.int=.95,lifeExpect=FALSE,maxtime,timedep12=FALSE,
                         lambda="BIC",...) {
     # check if model has weibull or splines baseline risk 
   if(!is.null(object$modelPar)){
@@ -163,8 +164,13 @@ predict.idm <- function(object,s,
           if(length(grep(":",names(object$coef[(1+object$NC[1]+object$NC[2]):(object$NC[3]+object$NC[2]+object$NC[1])])))>0){
             #Z12 <- model.matrix(object$terms$Formula12,data=newdata)[, -1, drop = FALSE]
             Z12 <- model.matrix(update.formula(formula(object$terms$Formula12),NULL~.),data=newdata)[, -1, drop = FALSE]
-          }else{
-            Z12 <-as.matrix(model.frame(formula=update.formula(formula(object$terms$Formula12),NULL~.),data=newdata))}
+            
+            }else{
+            Z12 <-as.matrix(model.frame(formula=update.formula(formula(object$terms$Formula12),NULL~.),data=newdata))
+            if(timedep12){illT <- data.frame("Z12_ill"=1)
+            colnames(illT) <- object$Xnames12[length(object$Xnames12)]
+            Z12 <- cbind(Z12,illT)}
+            }
           }else{
             Z12 <- 0}
     }else{
@@ -1173,39 +1179,39 @@ lifexpect0.idmPl <- function(s,knots01,nknots01,the01,knots12,nknots12,the12,kno
        LTR=LTR)
 }
 
-# 
-#  data(Paq1000)
-# library(prodlim)
-#  library(SmoothHazardoptim9)
-#  fit.paq <- SmoothHazardoptim9::idm(formula02=Hist(time=t,event=death,entry=e)~certif:gender,
-#                 formula01=Hist(time=list(l,r),event=dementia)~certif:gender,data=Paq1000)
-# 
-#  p1<-predict(fit.paq,
-#              s=70,t=80,lifeExpect=F,conf.int=T,
-#              newdata=data.frame(certif=1,gender=1),nsim=2)
-#  p1<-predict(fit.paq,
-#              s=70,t=80,lifeExpect=T,conf.int=T,
-#              newdata=data.frame(certif=1,gender=0))
-#  p1bis<-predict(fit.paq,s=70,t=80,lifeExpect=F,conf.int=T,newdata=data.frame(certif=1,gender=1),
-#                 nsim = 1)
-#  p1bis<-predict(fit.paq,s=70,t=80,lifeExpect=T,conf.int=T,newdata=data.frame(certif=1,gender=1),
-#                 nsim = 1)
-# 
-#  library(SmoothHazardoptim9)
-#  fit.paq2 <- SmoothHazardoptim9::idm(formula02=Hist(time=t,event=death,entry=e)~certif:gender,
-#                 formula01=Hist(time=list(l,r),event=dementia)~certif,data=Paq1000,method="splines")
-# 
+#
+ # data(Paq1000)
+ # library(prodlim)
+ #  library(SmoothHazardoptim9)
+ #  fit.paq <- SmoothHazardoptim9::idm(formula02=Hist(time=t,event=death,entry=e)~certif:gender,
+ #                 formula01=Hist(time=list(l,r),event=dementia)~certif:gender,data=Paq1000[1:300,])
+ # 
+ #    p1<-predict(fit.paq,
+ #              s=70,t=80,lifeExpect=F,conf.int=T,
+ #              newdata=data.frame(certif=1,gender=1))
+ #  p1<-predict(fit.paq,
+ #              s=70,t=80,lifeExpect=T,conf.int=T,
+ #              newdata=data.frame(certif=1,gender=0))
+ #  p1bis<-predict(fit.paq,s=70,t=80,lifeExpect=F,conf.int=T,newdata=data.frame(certif=1,gender=1),
+ #                 nsim = 1)
+ #  p1bis<-predict(fit.paq,s=70,t=80,lifeExpect=T,conf.int=T,newdata=data.frame(certif=1,gender=1),
+ #                 nsim = 1)
+ # 
+ #  library(SmoothHazardoptim9)
+ #  fit.paq2 <- SmoothHazardoptim9::idm(formula02=Hist(time=t,event=death,entry=e)~certif:gender,
+ #                 formula01=Hist(time=list(l,r),event=dementia)~certif,data=Paq1000,method="splines")
+
 #  p1<-predict(fit.paq2,s=70,t=80,lifeExpect=F,newdata=data.frame(certif=1,gender=1))
 #  p1bis<-predict(fit.paq2,s=70,t=80,lifeExpect=F,newdata=data.frame(certif=1),nsim=1)
 
 #  p1<-predict(fit.paq2,s=70,t=80,lifeExpect=T,newdata=data.frame(certif=1))
 #  p1bis<-predict(fit.paq2,s=70,t=80,lifeExpect=T,newdata=data.frame(certif=1),nsim=1)
- # pbr with print 
-# 
+ # pbr with print
+#
 # p3<- SmoothHazardoptim9::predict.idm(fit.splines,s=70,t=80,newdata=data.frame(certif=1))
 # predict(fit.splines,s=70,t=80,lifeExpect=TRUE,newdata=data.frame(certif=1),nsim=20)
-# 
- 
+#
+
  # pspline<-SmoothHazardoptim9::  idm(formula02 = f02,
  #                           formula01 = f01,
  #                           formula12 = f12,data=simu,
@@ -1215,7 +1221,7 @@ lifexpect0.idmPl <- function(s,knots01,nknots01,the01,knots12,nknots12,the12,kno
  #                           lambda02=lambda02,
  #                           lambda12=lambda12,
  #                           alpha=k,maxiter=100,maxiter.pena = 10)
- # 
+ #
  # for(k in 1:dim(simu)[1]){
  # print(k)
  # p1<-predict(fit.idm.C,

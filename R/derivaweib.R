@@ -1,5 +1,5 @@
 derivaweib<-function(b,npm,npar,bfix,fix,ctime,no,ve01,ve02,ve12,
-                     dimnva01,dimnva02,dimnva12,nva01,nva02,nva12,nva12dep,
+                     dimnva01,dimnva02,dimnva12,nva01,nva02,nva12,
                      t0,t1,t2,t3,troncature){
   res<-rep(0,(npm*(npm+1)/2)+npm)
   # return first and second derivatives of the loglik
@@ -21,7 +21,6 @@ derivaweib<-function(b,npm,npar,bfix,fix,ctime,no,ve01,ve02,ve12,
            as.integer(nva01),
            as.integer(nva12),
            as.integer(nva02),
-           as.integer(nva12dep),
            as.double(t0),
            as.double(t1),
            as.double(t2),

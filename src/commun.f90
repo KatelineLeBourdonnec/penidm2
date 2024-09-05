@@ -10,7 +10,7 @@ module commun
          double precision,dimension(:),allocatable,save::mm3c,mm2c,mm1c,mmc, &
          im3c,im2c,im1c,imc
 !-------------------  dace1 -------------------------------------------
-        double precision,dimension(:),allocatable,save::zi01,zi12,zi02,zi12_T
+        double precision,dimension(:),allocatable,save::zi01,zi12,zi02
 !-------------------  dace2 -------------------------------------------
         integer::no
 !-------------------  dace3 -------------------------------------------
