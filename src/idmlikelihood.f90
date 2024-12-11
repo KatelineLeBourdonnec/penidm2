@@ -494,7 +494,7 @@
 	gamma=0
 	end if
 	
-! Print *, 'Gamma dans likeli', gamma	
+ Print *, 'Gamma dans likeli', gamma	
 
 
          do i=1,2
