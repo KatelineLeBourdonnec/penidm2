@@ -485,7 +485,7 @@
          end if
       end do
  
-	Print *, 'semiMark', semiMark
+!	Print *, 'semiMark', semiMark
 	
 
 	if (nva12dep.eq.1) then
@@ -776,7 +776,7 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref, gamma, semiM
                   xx = xm+dx
                
    	              
-   	        Print *, 'semiMark GAUSS', semiMark      
+   	     !   Print *, 'semiMark GAUSS', semiMark      
              if(semiMark.eq.1)then
               c=c-xx
              endif
@@ -828,7 +828,7 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref, gamma, semiM
              endif
              endif
                   
-                 Print *, 'F1 dans qgauss', f1 
+                ! Print *, 'F1 dans qgauss', f1 
                   xx = xm-dx
                   
                   if(semiMark.eq.1)then
@@ -867,7 +867,7 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref, gamma, semiM
                  endif     
              endif
              endif
-                 Print *, 'F2 dans qgauss', f2
+               !  Print *, 'F2 dans qgauss', f2
                   res = res + w(j)*(f1+f2)
                    
                   
@@ -877,7 +877,7 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref, gamma, semiM
             endif
             res = res*xr
 
-          Print *, 'Res dans qgauss', res 
+       !   Print *, 'Res dans qgauss', res 
           end subroutine qgauss1
 
 
