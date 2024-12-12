@@ -493,7 +493,8 @@
 	else
 	gamma=0
 	end if
-	
+ 
+ Print *, 'NVA12DEP', nva12dep	
  Print *, 'Gamma dans likeli', gamma	
 
 
