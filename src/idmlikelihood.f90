@@ -425,7 +425,7 @@
 	
 	
         double precision::su01,ri01,su12,ri12,su02,ri02,gl01,gl02,gl12
-	double precision,dimension(no0)::t00,t10,t20,t30
+	double precision,dimension(no0)::t00,t10,t20,t30, tps
 	integer,dimension(no0)::c0
 
 	allocate(b(np0),bfix(npar0-np0),fix(npar0))
@@ -465,6 +465,7 @@
 	t1=t10
 	t2=t20
 	t3=t30
+	
 
          
         ! we need to put bh at its original values if in posfix 
@@ -494,8 +495,10 @@
 	gamma=0
 	end if
  
- Print *, 'NVA12DEP', nva12dep	
- Print *, 'Gamma dans likeli', gamma	
+ Print *, 'NVA12DEP test', nva12dep	
+
+ 
+ 
 
 
          do i=1,2
@@ -578,6 +581,7 @@
                          call  qgauss1(c(i),t1(i),t2(i),t3(i),the01,the02,&
                          the12,res2,vet01,vet02,vet12, gamma, semiMark)
                         res1=dlog(res2)
+                        
 
                 else  
                     if(c(i).eq.3)then ! obs 0-->1
@@ -588,6 +592,19 @@
                         dlog(ri01*vet01)+(gl12*vet12)
                         call fonct(t3(i),the12,ri12,gl12,su12)
                         res1 = res1 -(gl12*vet12)
+                        
+                        if(semiMark.eq.1)then
+                        call fonct(t1(i),the01,ri01,gl01,su01)
+                        call fonct(t1(i),the02,ri02,gl02,su02)
+                        res1 = -(gl01*vet01)-(gl02*vet02)+&
+                        dlog(ri01*vet01)
+                        tps(i) = t3(i) - t1(i)
+                        call fonct(tps(i),the12,ri12,gl12,su12)
+                        res1 = res1 -(gl12*vet12)
+                        endif
+                        
+                        
+                        
                     else   
                        if(c(i).eq.4)then ! cpi 0-->1 et obs 1-->2
 
@@ -606,6 +623,20 @@
                                 dlog(ri01*vet01)+(gl12*vet12)
                                 call fonct(t3(i),the12,ri12,gl12,su12)
                                 res1 = res1 -(gl12*vet12) + dlog(ri12*vet12)
+                                
+                                
+                        if(semiMark.eq.1)then
+                        call fonct(t1(i),the01,ri01,gl01,su01)
+                        call fonct(t1(i),the02,ri02,gl02,su02)
+                        res1 = -(gl01*vet01)-(gl02*vet02)+&
+                        dlog(ri01*vet01)
+                        tps(i) = t3(i) - t1(i)
+                        call fonct(tps(i),the12,ri12,gl12,su12)
+                        res1 = res1 -(gl12*vet12)+ dlog(ri12*vet12)
+                        endif
+                                
+                                
+                                
                          else
                             if(c(i).eq.6)then ! vivant ???
 				 call fonct(t3(i),the01,ri01,gl01,su01)
@@ -627,6 +658,8 @@
                                 res1 = (res2)+&
                                 ((su01**vet01)*(su02**vet02)*ri02*vet02)
                                 res1 = dlog(res1)
+                                
+                                 Print *, 'res test', the01, the02, vet01, vet02 
                             endif
                          endif                        
                       endif
@@ -636,14 +669,16 @@
 
                 res = res + res1 + tronc
 
+Print *, 'RES TEST', res
+     
                 if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                         likelihood_res=-1.d9
                         goto 123
                 end if
         end do   
-
+Print *, 'RES', res
         likelihood_res = res
-      ! Print *, 'Loglik', likelihood_res
+Print *, 'Loglik', likelihood_res
 
 123     continue 
 	 
@@ -745,9 +780,9 @@ subroutine fonct(x,p,risq,glam,surv)
 end subroutine fonct
 
 !================================  QGAUS : 1   ==========================
-subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref, gamma, semiMark)
+subroutine qgauss1(cas,a,b,c, the01,the02,the12,res,v01,v02,v12_ref, gamma, semiMark)
         implicit none
-         double precision a,b,c,the01(2),the02(2),the12(2)
+         double precision a,b,c,ctemp,the01(2),the02(2),the12(2)
          double precision dx,xm,xr,w(5),x(5),res,v01,v02,v12, gamma
          double precision xx,f1,su01,ri01,ri12,f2,su12,su02,ri02
          double precision gl01,gl12,gl02,su12_t,ri12_t,v12_ref,v12dem
@@ -778,63 +813,57 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref, gamma, semiM
                
    	              
    	     !   Print *, 'semiMark GAUSS', semiMark      
+            
+             ctemp=c
              if(semiMark.eq.1)then
-              c=c-xx
+              ctemp=c-xx
              endif
+             
+              v12dem = exp(gamma*xx)
+   	          v12 = v12_ref*v12dem
    	                
    	         !   Print *, "Gamma", gamma, xx 
                   
                   call fonct(xx,the01,ri01,gl01,su01)
                   call fonct(xx,the02,ri02,gl02,su02)
+                  if(semiMark.eq.0)then
                   call fonct(xx,the12,ri12,gl12,su12)
-                  call fonct(c,the12,ri12_t,gl12,su12_t)
+                  endif
+                  call fonct(ctemp,the12,ri12_t,gl12,su12_t)
       	            
-      	            v12dem = exp(gamma*xx)
-   	                v12 = v12_ref*v12dem
+      	           
                    
-            if((cas.eq.4 .or. cas.eq.7)) then
+  if((cas.eq.4 .or. cas.eq.7)) then
                  
                !  Print *, "Cas 0"
                 
+                if(semiMark.eq.0)then
                  f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)*ri12_t*v12/&
                        (su12**v12)
-                
-                 if(semiMark.eq.1)then
+                else
+                 
                  f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)*ri12_t*v12
                  endif       
-                  
-                  
-                 
-                  
-                  
+                
                   
              else
-                 if((cas.eq.2 .or. cas.eq.6)) then
-               
+ if((cas.eq.2 .or. cas.eq.6)) then
+               if(semiMark.eq.0)then
                  f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)/(su12**v12)
                  
-                  if(semiMark.eq.1)then
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
-                 endif  
-    
                  else
-                 
-              
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*ri12*v12/(su12**v12)
-              
-               if(semiMark.eq.1)then
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*ri12*v12
+                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
                  endif
-                 
-             endif
-             endif
+     endif  
+     endif
                   
                 ! Print *, 'F1 dans qgauss', f1 
                   xx = xm-dx
                   
-                  if(semiMark.eq.1)then
-                   c=c-xx
-                  endif
+             ctemp=c
+             if(semiMark.eq.1)then
+              ctemp=c-xx
+             endif
    	         
                    
    	         v12dem = exp(gamma*xx)
@@ -842,32 +871,33 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref, gamma, semiM
    	         
                   call fonct(xx,the01,ri01,gl01,su01)
                   call fonct(xx,the02,ri02,gl02,su02)
+                  if(semiMark.eq.0)then
                   call fonct(xx,the12,ri12,gl12,su12)
+                  endif
                   call fonct(c,the12,ri12_t,gl12,su12_t)
                   
-             if((cas.eq.4 .or. cas.eq.7)) then
+  if((cas.eq.4 .or. cas.eq.7)) then
+                               if(semiMark.eq.0)then
+
                   f2 = ((su01**v01)*(su02**v02)*ri01*v01)*(su12_t**v12)*ri12_t*v12/(su12**v12)
-                   if(semiMark.eq.1)then
+                   else
                 f2 = ((su01**v01)*(su02**v02)*ri01*v01)*(su12_t**v12)*ri12_t*v12
                  endif
                   
             
              else
-                  if((cas.eq.2 .or. cas.eq.6)) then
+  if((cas.eq.2 .or. cas.eq.6)) then
+                  if(semiMark.eq.0)then
+                  
                   f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)/(su12**v12)
                   
-                  if(semiMark.eq.1)then
+                  else
                f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
                  endif
                   
-             else
-             
-                  f2 = (su01**v01)*(su02**v02)*ri01*v01*ri12*v12/(su12**v12)
-              if(semiMark.eq.1)then
-               f2 = (su01**v01)*(su02**v02)*ri01*v01*ri12*v12
-                 endif     
-             endif
-             endif
+                 
+  endif
+  endif
                !  Print *, 'F2 dans qgauss', f2
                   res = res + w(j)*(f1+f2)
                    
@@ -878,7 +908,7 @@ subroutine qgauss1(cas,a,b,c,the01,the02,the12,res,v01,v02,v12_ref, gamma, semiM
             endif
             res = res*xr
 
-       !   Print *, 'Res dans qgauss', res 
+         Print *, 'Res dans qgauss', res 
           end subroutine qgauss1
 
 
