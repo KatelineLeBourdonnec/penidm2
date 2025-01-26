@@ -874,7 +874,7 @@ subroutine qgauss1(cas,a,b,c, the01,the02,the12,res,v01,v02,v12_ref, gamma, semi
                   if(semiMark.eq.0)then
                   call fonct(xx,the12,ri12,gl12,su12)
                   endif
-                  call fonct(c,the12,ri12_t,gl12,su12_t)
+                  call fonct(ctemp,the12,ri12_t,gl12,su12_t)
                   
   if((cas.eq.4 .or. cas.eq.7)) then
                                if(semiMark.eq.0)then
@@ -914,15 +914,16 @@ subroutine qgauss1(cas,a,b,c, the01,the02,the12,res,v01,v02,v12_ref, gamma, semi
 !==== QGAUS15 out a 15 point Gauss-Kronrod quadrature rule for weib  =========================
 !=============================================================================================  
 
-subroutine qgaussPL15weib(a,b,the01,the02,the12,res,v01,v02,v12)
+subroutine qgaussPL15weib(cas, a,b,c,the01,the02,the12,res,v01,v02,v12_ref, gamma, semiMark)
          implicit none
          
-         integer::j,jtw,jtwm1
-         double precision::a,b,dx,xm,xr,res,resk,v01,v02,v12,&
+         integer::j,jtw,jtwm1,cas, semiMark
+         double precision::a,b,c,ctemp, dx,xm,xr,res,resk,v01,v02,v12,v12_ref, gamma,&
          fv1,fv2,d1mach(5),epmach,uflow,the01(2),the12(2),the02(2)
          double precision,dimension(8)::xgk,wgk
 	 double precision,dimension(4)::wg
-         double precision::xx,f1,su01,ri01,ri12,f2,su12,su02,ri02,fc,gl01,gl02,gl12
+         double precision::xx,f1,su01,ri01,ri12,f2,su12,su02,ri02,fc,gl01,gl02,gl12,&
+         su12_t, ri12_t, v12dem
          save wgk,xgk
 	 dimension fv1(7),fv2(7)
 
@@ -975,34 +976,193 @@ subroutine qgaussPL15weib(a,b,the01,the02,the12,res,v01,v02,v12)
                do j=1,3
                	dx=xr*xgk(jtw)
                	xx = xm+dx
+               	
+               	
+               	ctemp=c
+               	if(semiMark.eq.1)then 
+               	ctemp=c-xx
+               	endif
+               	
+               	v12dem= exp(gamma*x)
+               	v12=v12_ref*v12dem
+               	
+               	
                	call fonct(xx,the01,ri01,gl01,su01)
                	call fonct(xx,the02,ri02,gl02,su02)
+               	
+               	if(semiMark.eq.0)then
                	call fonct(xx,the12,ri12,gl12,su12)
-               	f1 = (su01**v01)*(su02**v02)*ri01*v01/(su12**v12)
+               	endif
+               	
+               	call fonct(ctemp, the12, ri12_t, gl12, su12_t)
+  
+  
+  
+  if(cas.eq.4 or cas.eq.7)then  
+       if(semiMark.eq.0)then
+                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)*ri12_t*v12/&
+                       (su12**v12)
+                else
+                 
+                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)*ri12_t*v12
+                 endif       
+                
+                  
+             else
+ if((cas.eq.2 .or. cas.eq.6)) then
+               if(semiMark.eq.0)then
+                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)/(su12**v12)
+                 
+                 else
+                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
+                 endif
+     endif  
+     endif
+      
+      
+      
                	xx = xm-dx
+               	
+               	
+               	ctemps=c
+               	if(semiMark.eq.1)then
+               	ctemp=c-xx
+               	endif
+               	
+               	v12dem=exp(gamma*xx)
+               	v12 = v12_ref*v12dem
+               	
+               	
                	call fonct(xx,the01,ri01,gl01,su01)
                	call fonct(xx,the02,ri02,gl02,su02)
+               	if(semiMark.eq.0)then
                	call fonct(xx,the12,ri12,gl12,su12)
-               	f2 = (su01**v01)*(su02**v02)*ri01*v01/(su12**v12)
+               	endif
+               	call fonct(ctemp, the12, ri12_t, gl12, su12_t)
+               	
+               	
+               	if((cas.eq.4 .or. cas.eq.7)) then
+                               if(semiMark.eq.0)then
+
+                  f2 = ((su01**v01)*(su02**v02)*ri01*v01)*(su12_t**v12)*ri12_t*v12/(su12**v12)
+                   else
+                f2 = ((su01**v01)*(su02**v02)*ri01*v01)*(su12_t**v12)*ri12_t*v12
+                 endif
+                  
+            
+             else
+  if((cas.eq.2 .or. cas.eq.6)) then
+                  if(semiMark.eq.0)then
+                  
+                  f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)/(su12**v12)
+                  
+                  else
+               f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
+                 endif
+                  
+                 
+  endif
+  endif
+               	
+               	
+               
                	fv1(jtw) = f1   ! svgrd valeurs fct f a gche du centre
                	fv2(jtw) = f2   ! svgrd valeurs fct f a drte du centre
 	       	
                	resk = resk + wgk(jtw)*(f1+f2)
 
               end do
+              
 	      do j=1,4
 	       jtwm1 = j*2-1
                dx=xr*xgk(jtwm1)
                xx = xm+dx
-               call fonct(xx,the01,ri01,gl01,su01)
-               call fonct(xx,the02,ri02,gl02,su02)
-               call fonct(xx,the12,ri12,gl12,su12)
-               f1 = (su01**v01)*(su02**v02)*ri01*v01/(su12**v12)
+               	ctemp=c
+               	if(semiMark.eq.1)then 
+               	ctemp=c-xx
+               	endif
+               	
+               	v12dem= exp(gamma*x)
+               	v12=v12_ref*v12dem
+               	
+               	
+               	call fonct(xx,the01,ri01,gl01,su01)
+               	call fonct(xx,the02,ri02,gl02,su02)
+               	
+               	if(semiMark.eq.0)then
+               	call fonct(xx,the12,ri12,gl12,su12)
+               	endif
+               	
+               	call fonct(ctemp, the12, ri12_t, gl12, su12_t)
+  
+  
+  
+  if(cas.eq.4 or cas.eq.7)then  
+       if(semiMark.eq.0)then
+                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)*ri12_t*v12/&
+                       (su12**v12)
+                else
+                 
+                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)*ri12_t*v12
+                 endif       
+                
+                  
+             else
+ if((cas.eq.2 .or. cas.eq.6)) then
+               if(semiMark.eq.0)then
+                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)/(su12**v12)
+                 
+                 else
+                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
+                 endif
+     endif  
+     endif
+               
+               
+               
                xx = xm-dx
-               call fonct(xx,the01,ri01,gl01,su01)
-               call fonct(xx,the02,ri02,gl02,su02)
-               call fonct(xx,the12,ri12,gl12,su12)
-               f2 = (su01**v01)*(su02**v02)*ri01*v01/(su12**v12)
+               
+               
+               
+               ctemps=c
+               	if(semiMark.eq.1)then
+               	ctemp=c-xx
+               	endif
+               	
+               	v12dem=exp(gamma*xx)
+               	v12 = v12_ref*v12dem
+               	
+               	
+               	call fonct(xx,the01,ri01,gl01,su01)
+               	call fonct(xx,the02,ri02,gl02,su02)
+               	if(semiMark.eq.0)then
+               	call fonct(xx,the12,ri12,gl12,su12)
+               	endif
+               	call fonct(ctemp, the12, ri12_t, gl12, su12_t)
+               	
+               	
+               	if((cas.eq.4 .or. cas.eq.7)) then
+                               if(semiMark.eq.0)then
+
+                  f2 = ((su01**v01)*(su02**v02)*ri01*v01)*(su12_t**v12)*ri12_t*v12/(su12**v12)
+                   else
+                f2 = ((su01**v01)*(su02**v02)*ri01*v01)*(su12_t**v12)*ri12_t*v12
+                 endif
+                  
+            
+             else
+  if((cas.eq.2 .or. cas.eq.6)) then
+                  if(semiMark.eq.0)then
+                  
+                  f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)/(su12**v12)
+                  
+                  else
+               f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
+                 endif
+                  
+                 
+  endif
+  endif
                fv1(jtwm1) = f1   ! svgrd valeurs fct f a gche du centre
                fv2(jtwm1) = f2   ! svgrd valeurs fct f a drte du centre
 	       resk = resk + wgk(jtwm1)*(f1+f2)
