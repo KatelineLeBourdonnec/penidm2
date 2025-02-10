@@ -1,8 +1,4 @@
  
-
-
-
-
 !========================          idmlLikelihood         ====================
 
       subroutine idmlikelihood(b0,np0,npar0,bfix0,fix0,zi010,zi120,zi020,c0,&
@@ -376,7 +372,7 @@
                 endif   
              endif   
 
-                res = res + res1  + tronc
+                res = res + res1  + tronc 
              
                 if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                         likelihood_res=-1.d9
@@ -495,7 +491,7 @@
 	gamma=0
 	end if
  
- Print *, 'NVA12DEP test', nva12dep	
+! Print *, 'NVA12DEP test', nva12dep	
 
  
  
@@ -659,7 +655,7 @@
                                 ((su01**vet01)*(su02**vet02)*ri02*vet02)
                                 res1 = dlog(res1)
                                 
-                                 Print *, 'res test', the01, the02, vet01, vet02 
+                              !   Print *, 'res test', the01, the02, vet01, vet02 
                             endif
                          endif                        
                       endif
@@ -669,16 +665,16 @@
 
                 res = res + res1 + tronc
 
-Print *, 'RES TEST', res
+! Print *, 'RES TEST', res
      
                 if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                         likelihood_res=-1.d9
                         goto 123
                 end if
         end do   
-Print *, 'RES', res
+! Print *, 'RES', res
         likelihood_res = res
-Print *, 'Loglik', likelihood_res
+! Print *, 'Loglik', likelihood_res
 
 123     continue 
 	 
@@ -895,8 +891,8 @@ subroutine qgauss1(cas,a,b,c, the01,the02,the12,res,v01,v02,v12_ref, gamma, semi
                f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
                  endif
                   
-                 
-  endif
+                  
+  endif 
   endif
                !  Print *, 'F2 dans qgauss', f2
                   res = res + w(j)*(f1+f2)
@@ -908,270 +904,8 @@ subroutine qgauss1(cas,a,b,c, the01,the02,the12,res,v01,v02,v12_ref, gamma, semi
             endif
             res = res*xr
 
-         Print *, 'Res dans qgauss', res 
+        ! Print *, 'Res dans qgauss', res 
           end subroutine qgauss1
-!=============================================================================================  
-!==== QGAUS15 out a 15 point Gauss-Kronrod quadrature rule for weib  =========================
-!=============================================================================================  
-
-subroutine qgaussPL15weib(cas, a,b,c,the01,the02,the12,res,v01,v02,v12_ref, gamma, semiMark)
-         implicit none
-         
-         integer::j,jtw,jtwm1,cas, semiMark
-         double precision::a,b,c,ctemp, dx,xm,xr,res,resk,v01,v02,v12,v12_ref, gamma,&
-         fv1,fv2,d1mach(5),epmach,uflow,the01(2),the12(2),the02(2)
-         double precision,dimension(8)::xgk,wgk
-	 double precision,dimension(4)::wg
-         double precision::xx,f1,su01,ri01,ri12,f2,su12,su02,ri02,fc,gl01,gl02,gl12,&
-         su12_t, ri12_t, v12dem
-         save wgk,xgk
-	 dimension fv1(7),fv2(7)
-
-   	D1MACH(1)=2.23D-308
-    	D1MACH(2)=1.79D+308
-    	D1MACH(3)=1.11D-16
-    	D1MACH(4)=2.22D-16
-    	D1MACH(5)=0.301029995663981195D0
-
-    	epmach = d1mach(4)
-    	uflow = d1mach(1)
-
-	wg(1)=0.129484966168869693270611432679082d0
-   	wg(2)=0.279705391489276667901467771423780d0
-    	wg(3)=0.381830050505118944950369775488975d0
-    	wg(4)=0.417959183673469387755102040816327d0
-
-    	xgk(1)=0.991455371120812639206854697526329d0
-    	xgk(2)=0.949107912342758524526189684047851d0
-    	xgk(3)=0.864864423359769072789712788640926d0
-    	xgk(4)=0.741531185599394439863864773280788d0
-    	xgk(5)=0.586087235467691130294144838258730d0
-    	xgk(6)=0.405845151377397166906606412076961d0
-    	xgk(7)=0.207784955007898467600689403773245d0
-    	xgk(8)=0.000000000000000000000000000000000d0
-
-    	wgk(1)=0.022935322010529224963732008058970d0
-    	wgk(2)=0.063092092629978553290700663189204d0
-    	wgk(3)=0.104790010322250183839876322541518d0
-    	wgk(4)=0.140653259715525918745189590510238d0
-    	wgk(5)=0.169004726639267902826583426598550d0
-    	wgk(6)=0.190350578064785409913256402421014d0
-    	wgk(7)=0.204432940075298892414161999234649d0
-    	wgk(8)=0.209482141084727828012999174891714d0
-     
-
-        xm = 0.5d+00*(b+a)
-        xr = 0.5d+00*(b-a)
-        call fonct(xm,the01,ri01,gl01,su01)
-        call fonct(xm,the02,ri02,gl02,su02)
-        call fonct(xm,the12,ri12,gl12,su12)
-        fc = (su01**v01)*(su02**v02)*ri01*v01/(su12**v12)  ! valeur fct f au milieu de intervalle (a,b), cas pnt 0
-
-    	
-        resk = fc*wgk(8)       ! init res Kronrod   ! fc * 8e poids Kronrod
-         
-            if(a.eq.b)then
-               res = 0.d0
-            else
-               do j=1,3
-               	dx=xr*xgk(jtw)
-               	xx = xm+dx
-               	
-               	
-               	ctemp=c
-               	if(semiMark.eq.1)then 
-               	ctemp=c-xx
-               	endif
-               	
-               	v12dem= exp(gamma*x)
-               	v12=v12_ref*v12dem
-               	
-               	
-               	call fonct(xx,the01,ri01,gl01,su01)
-               	call fonct(xx,the02,ri02,gl02,su02)
-               	
-               	if(semiMark.eq.0)then
-               	call fonct(xx,the12,ri12,gl12,su12)
-               	endif
-               	
-               	call fonct(ctemp, the12, ri12_t, gl12, su12_t)
-  
-  
-  
-  if(cas.eq.4 or cas.eq.7)then  
-       if(semiMark.eq.0)then
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)*ri12_t*v12/&
-                       (su12**v12)
-                else
-                 
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)*ri12_t*v12
-                 endif       
-                
-                  
-             else
- if((cas.eq.2 .or. cas.eq.6)) then
-               if(semiMark.eq.0)then
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)/(su12**v12)
-                 
-                 else
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
-                 endif
-     endif  
-     endif
-      
-      
-      
-               	xx = xm-dx
-               	
-               	
-               	ctemps=c
-               	if(semiMark.eq.1)then
-               	ctemp=c-xx
-               	endif
-               	
-               	v12dem=exp(gamma*xx)
-               	v12 = v12_ref*v12dem
-               	
-               	
-               	call fonct(xx,the01,ri01,gl01,su01)
-               	call fonct(xx,the02,ri02,gl02,su02)
-               	if(semiMark.eq.0)then
-               	call fonct(xx,the12,ri12,gl12,su12)
-               	endif
-               	call fonct(ctemp, the12, ri12_t, gl12, su12_t)
-               	
-               	
-               	if((cas.eq.4 .or. cas.eq.7)) then
-                               if(semiMark.eq.0)then
-
-                  f2 = ((su01**v01)*(su02**v02)*ri01*v01)*(su12_t**v12)*ri12_t*v12/(su12**v12)
-                   else
-                f2 = ((su01**v01)*(su02**v02)*ri01*v01)*(su12_t**v12)*ri12_t*v12
-                 endif
-                  
-            
-             else
-  if((cas.eq.2 .or. cas.eq.6)) then
-                  if(semiMark.eq.0)then
-                  
-                  f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)/(su12**v12)
-                  
-                  else
-               f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
-                 endif
-                  
-                 
-  endif
-  endif
-               	
-               	
-               
-               	fv1(jtw) = f1   ! svgrd valeurs fct f a gche du centre
-               	fv2(jtw) = f2   ! svgrd valeurs fct f a drte du centre
-	       	
-               	resk = resk + wgk(jtw)*(f1+f2)
-
-              end do
-              
-	      do j=1,4
-	       jtwm1 = j*2-1
-               dx=xr*xgk(jtwm1)
-               xx = xm+dx
-               	ctemp=c
-               	if(semiMark.eq.1)then 
-               	ctemp=c-xx
-               	endif
-               	
-               	v12dem= exp(gamma*x)
-               	v12=v12_ref*v12dem
-               	
-               	
-               	call fonct(xx,the01,ri01,gl01,su01)
-               	call fonct(xx,the02,ri02,gl02,su02)
-               	
-               	if(semiMark.eq.0)then
-               	call fonct(xx,the12,ri12,gl12,su12)
-               	endif
-               	
-               	call fonct(ctemp, the12, ri12_t, gl12, su12_t)
-  
-  
-  
-  if(cas.eq.4 or cas.eq.7)then  
-       if(semiMark.eq.0)then
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)*ri12_t*v12/&
-                       (su12**v12)
-                else
-                 
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)*ri12_t*v12
-                 endif       
-                
-                  
-             else
- if((cas.eq.2 .or. cas.eq.6)) then
-               if(semiMark.eq.0)then
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)/(su12**v12)
-                 
-                 else
-                 f1 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
-                 endif
-     endif  
-     endif
-               
-               
-               
-               xx = xm-dx
-               
-               
-               
-               ctemps=c
-               	if(semiMark.eq.1)then
-               	ctemp=c-xx
-               	endif
-               	
-               	v12dem=exp(gamma*xx)
-               	v12 = v12_ref*v12dem
-               	
-               	
-               	call fonct(xx,the01,ri01,gl01,su01)
-               	call fonct(xx,the02,ri02,gl02,su02)
-               	if(semiMark.eq.0)then
-               	call fonct(xx,the12,ri12,gl12,su12)
-               	endif
-               	call fonct(ctemp, the12, ri12_t, gl12, su12_t)
-               	
-               	
-               	if((cas.eq.4 .or. cas.eq.7)) then
-                               if(semiMark.eq.0)then
-
-                  f2 = ((su01**v01)*(su02**v02)*ri01*v01)*(su12_t**v12)*ri12_t*v12/(su12**v12)
-                   else
-                f2 = ((su01**v01)*(su02**v02)*ri01*v01)*(su12_t**v12)*ri12_t*v12
-                 endif
-                  
-            
-             else
-  if((cas.eq.2 .or. cas.eq.6)) then
-                  if(semiMark.eq.0)then
-                  
-                  f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)/(su12**v12)
-                  
-                  else
-               f2 = (su01**v01)*(su02**v02)*ri01*v01*(su12_t**v12)
-                 endif
-                  
-                 
-  endif
-  endif
-               fv1(jtwm1) = f1   ! svgrd valeurs fct f a gche du centre
-               fv2(jtwm1) = f2   ! svgrd valeurs fct f a drte du centre
-	       resk = resk + wgk(jtwm1)*(f1+f2)
-              end do
-	    
-    	res = xr*resk
-	endif
-    
-          end subroutine qgaussPL15weib
 
 !================================  QGAUS : CHEBYCHEV   ==========================
       subroutine qgaussPL(cas,a,b,the01,the12,the02,res,v1,v2,v3)
